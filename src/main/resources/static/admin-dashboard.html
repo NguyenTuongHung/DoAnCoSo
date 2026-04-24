@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - NewsApp</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h2>📰 Admin Panel</h2>
+    </div>
+
+    <nav class="menu">
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Quản lý bài viết</a>
+      <a href="#">Kiểm duyệt bài viết</a>
+      <a href="#">Quản lý người dùng</a>
+      <a href="#">Quản lý bình luận</a>
+      <a href="#">Danh mục</a>
+      <a href="#">Thống kê</a>
+      <a href="#">Cài đặt hệ thống</a>
+      <a href="#">Đăng xuất</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- HEADER -->
+    <header class="topbar">
+      <div>
+        <h1>Dashboard Admin</h1>
+        <p>Quản lý hệ thống tin tức và kiểm duyệt nội dung</p>
+      </div>
+
+      <div class="top-right">
+        <input type="text" placeholder="Tìm kiếm...">
+        <button class="notify-btn">🔔</button>
+        <div class="admin-info">
+          <span>Xin chào, Admin</span>
+          <img src="https://i.pravatar.cc/50" alt="avatar">
+        </div>
+      </div>
+    </header>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="card">
+        <h3>Tổng bài viết</h3>
+        <p>1,248</p>
+      </div>
+
+      <div class="card">
+        <h3>Bài chờ duyệt</h3>
+        <p>86</p>
+      </div>
+
+      <div class="card">
+        <h3>Người dùng</h3>
+        <p>3,542</p>
+      </div>
+
+      <div class="card">
+        <h3>Bình luận</h3>
+        <p>12,890</p>
+      </div>
+
+      <div class="card">
+        <h3>Lượt xem hôm nay</h3>
+        <p>28,430</p>
+      </div>
+
+      <div class="card">
+        <h3>Báo cáo vi phạm</h3>
+        <p>14</p>
+      </div>
+    </section>
+
+    <!-- CONTENT GRID -->
+    <section class="content-grid">
+
+      <!-- BÀI CHỜ DUYỆT -->
+      <div class="pending-posts">
+        <h2>Bài viết chờ duyệt</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Tiêu đề</th>
+              <th>Tác giả</th>
+              <th>Danh mục</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Xu hướng AI 2026</td>
+              <td>Nguyễn Văn A</td>
+              <td>Công nghệ</td>
+              <td><span class="pending">Chờ duyệt</span></td>
+              <td>
+                <button class="approve">Duyệt</button>
+                <button class="reject">Từ chối</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Review thị trường ô tô điện</td>
+              <td>Trần Thị B</td>
+              <td>Xe cộ</td>
+              <td><span class="pending">Chờ duyệt</span></td>
+              <td>
+                <button class="approve">Duyệt</button>
+                <button class="reject">Từ chối</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Kinh nghiệm du lịch Đà Nẵng</td>
+              <td>Lê Văn C</td>
+              <td>Du lịch</td>
+              <td><span class="pending">Chờ duyệt</span></td>
+              <td>
+                <button class="approve">Duyệt</button>
+                <button class="reject">Từ chối</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <h2>Thao tác nhanh</h2>
+
+        <button>Duyệt bài viết</button>
+        <button>Quản lý User</button>
+        <button>Xóa bình luận xấu</button>
+        <button>Thêm danh mục</button>
+        <button>Xem thống kê</button>
+        <button>Cài đặt hệ thống</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

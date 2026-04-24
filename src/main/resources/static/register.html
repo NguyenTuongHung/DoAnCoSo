@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký tài khoản - NewsApp</title>
+  <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+
+  <div class="register-page">
+
+    <!-- LEFT SIDE -->
+    <div class="register-left">
+      <div class="overlay"></div>
+
+      <div class="left-content">
+        <h1>📰 NewsApp</h1>
+        <h2>Tham gia cộng đồng tin tức hiện đại</h2>
+
+        <p>
+          Tạo tài khoản để đăng bài viết, chia sẻ quan điểm,
+          cập nhật thông tin mới nhất và kết nối với cộng đồng
+          yêu thích công nghệ, tài chính, du lịch, đời sống và nhiều lĩnh vực khác.
+        </p>
+
+        <div class="feature-list">
+          <div>✔ Đăng bài viết và chờ admin duyệt</div>
+          <div>✔ Bình luận và tương tác cộng đồng</div>
+          <div>✔ Theo dõi tin tức mới nhất mỗi ngày</div>
+          <div>✔ Trải nghiệm hệ thống quản lý chuyên nghiệp</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="register-right">
+
+      <div class="register-box">
+        <h2>Đăng ký tài khoản</h2>
+        <p>Điền thông tin để bắt đầu sử dụng hệ thống</p>
+
+        <form class="register-form">
+
+          <!-- Họ tên -->
+          <div class="form-group">
+            <label>Họ và tên</label>
+            <input 
+              type="text"
+              placeholder="Nhập họ và tên..."
+              required
+            >
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label>Email</label>
+            <input 
+              type="email"
+              placeholder="Nhập email..."
+              required
+            >
+          </div>
+
+          <!-- Số điện thoại -->
+          <div class="form-group">
+            <label>Số điện thoại</label>
+            <input 
+              type="text"
+              placeholder="Nhập số điện thoại..."
+              required
+            >
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label>Mật khẩu</label>
+            <input 
+              type="password"
+              placeholder="Nhập mật khẩu..."
+              required
+            >
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="form-group">
+            <label>Xác nhận mật khẩu</label>
+            <input 
+              type="password"
+              placeholder="Nhập lại mật khẩu..."
+              required
+            >
+          </div>
+
+          <!-- Role -->
+          <div class="form-group">
+            <label>Vai trò</label>
+            <select required>
+              <option value="">-- Chọn vai trò --</option>
+              <option value="user">User</option>
+              <option value="admin">Admin (Demo)</option>
+            </select>
+          </div>
+
+          <!-- Checkbox -->
+          <div class="form-options">
+            <label class="agree">
+              <input type="checkbox" required>
+              Tôi đồng ý với điều khoản sử dụng
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="register-btn">
+            Đăng ký tài khoản
+          </button>
+
+          <!-- Login Link -->
+          <div class="login-link">
+            Đã có tài khoản?
+            <a href="login.html">Đăng nhập ngay</a>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="js/register.js"></script>
+</body>
+</html>

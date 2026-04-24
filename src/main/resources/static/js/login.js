@@ -1,5 +1,6 @@
+
 /* =========================
-   LOGIN PAGE JS
+   LOGIN PAGE JS (FIXED)
 ========================= */
 
 const loginForm = document.querySelector(".login-form");
@@ -13,40 +14,65 @@ loginForm.addEventListener("submit", function (e) {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
 
-  if (email === "" || password === "") {
+  if (!email || !password) {
     alert("Vui lòng nhập đầy đủ email và mật khẩu!");
     return;
   }
 
-  /* Demo role login */
+  let user = null;
+
+  /* ADMIN */
   if (email === "admin@gmail.com" && password === "123456") {
-    alert("Đăng nhập Admin thành công!");
-    window.location.href = "admin-dashboard.html";
+    user = {
+      username: "Admin",
+      email: email,
+      role: "admin"
+    };
+  }
+
+  /* USER */
+  else if (email === "user@gmail.com" && password === "123456") {
+    user = {
+      username: "User",
+      email: email,
+      role: "user"
+    };
+  }
+
+  else {
+    alert("Sai tài khoản hoặc mật khẩu!");
     return;
   }
 
-  if (email === "user@gmail.com" && password === "123456") {
-    alert("Đăng nhập User thành công!");
-    window.location.href = "create-post.html";
-    return;
-  }
+  /* SAVE USER TO LOCALSTORAGE */
+  localStorage.setItem("user", JSON.stringify(user));
 
-  alert("Sai tài khoản hoặc mật khẩu!");
+  alert("Đăng nhập thành công!");
+
+  /* redirect về trang chính */
+  window.location.href = "index.html";
 });
 
 
-/* Auto fill demo account when click demo box */
+/* =========================
+   DEMO AUTO FILL
+========================= */
+
 const demoBox = document.querySelector(".demo-box");
 
-demoBox.addEventListener("click", () => {
-  emailInput.value = "admin@gmail.com";
-  passwordInput.value = "123456";
+if (demoBox) {
+  demoBox.addEventListener("click", () => {
+    emailInput.value = "admin@gmail.com";
+    passwordInput.value = "123456";
+    alert("Đã điền tài khoản Admin demo!");
+  });
+}
 
-  alert("Đã tự động điền tài khoản Admin demo!");
-});
 
+/* =========================
+   ENTER KEY LOGIN
+========================= */
 
-/* Enter key support */
 document.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     loginForm.dispatchEvent(new Event("submit"));
@@ -54,7 +80,10 @@ document.addEventListener("keydown", function (e) {
 });
 
 
-/* Focus effect */
+/* =========================
+   INPUT UI EFFECT
+========================= */
+
 const inputs = document.querySelectorAll("input");
 
 inputs.forEach((input) => {

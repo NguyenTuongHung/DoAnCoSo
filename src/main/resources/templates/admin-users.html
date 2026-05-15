@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng - NEWS PANEL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --sidebar-bg: #0f172a;
+            --primary: #0ea5e9;
+            --primary-light: #e0f2fe;
+            --bg-body: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-body); display: flex; color: var(--text-main); }
+
+        /* SIDEBAR */
+        .sidebar { 
+            width: 260px; 
+            background: var(--sidebar-bg); 
+            min-height: 100vh; 
+            color: white; 
+            position: fixed; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 1000;
+        }
+        .logo { padding: 30px 20px; text-align: center; border-bottom: 1px solid #1e293b; margin-bottom: 10px; }
+        .logo h2 { margin: 0; color: var(--primary); font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+        
+        .menu-content { flex: 1; }
+        .menu-label { padding: 15px 25px 5px; font-size: 11px; text-transform: uppercase; color: #475569; font-weight: 700; letter-spacing: 1px; }
+        .menu-item { padding: 12px 25px; display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; transition: 0.3s; border-left: 4px solid transparent; font-size: 14px; }
+        .menu-item:hover { background: #1e293b; color: white; }
+        .menu-item.active { background: #1e293b; color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+
+        .logout-section { margin-top: auto; padding: 30px 25px; border-top: 1px solid #1e293b; }
+        .logout-item { color: #fb7185; text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; transition: 0.3s; }
+        .logout-item:hover { color: #f43f5e; }
+
+        /* MAIN CONTENT */
+        .main-content { margin-left: 260px; flex: 1; padding: 0 40px 40px; min-width: 0; }
+        
+        .top-nav { 
+            background: var(--white); 
+            margin: 0 -40px 30px; 
+            padding: 15px 40px; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky;
+            top: 0; 
+            z-index: 10; 
+        }
+        .admin-profile { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+        .admin-profile .name { font-weight: 700; font-size: 14px; display: block; }
+        .admin-profile img { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary-light); }
+
+        .header-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .header-title-row h1 { margin: 0; font-size: 24px; font-weight: 800; }
+        .btn-back { 
+            display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-muted); 
+            font-size: 14px; font-weight: 600; padding: 10px 18px; border-radius: 12px; 
+            background: white; border: 1px solid var(--border); transition: 0.2s;
+        }
+        .btn-add-user { background: var(--primary); color: white; text-decoration: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-add-user:hover { background: #0284c7; transform: translateY(-1px); }
+
+        /* TABLE */
+        .card-table { background: var(--white); border-radius: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 18px 30px; background: #f8fafc; color: var(--text-muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); letter-spacing: 0.5px; }
+        td { padding: 15px 30px; border-bottom: 1px solid var(--border); }
+        
+        .user-avatar { width: 40px; height: 40px; border-radius: 12px; background: #e0f2fe; color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 2px 4px rgba(14, 165, 233, 0.1); }
+        
+        .btn-icon { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; margin-left: 5px; transition: 0.2s; }
+        .edit-user { color: var(--primary); background: #e0f2fe; }
+        .edit-user:hover { background: var(--primary); color: white; }
+        .delete-user { color: #ef4444; background: #fee2e2; }
+        .delete-user:hover { background: #ef4444; color: white; }
+
+        .role-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #f1f5f9; color: #475569; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2><i class="fa-solid fa-newspaper"></i> NEWS PANEL</h2>
+        </div>
+        
+        <nav class="menu-content">
+            <div class="menu-label">Chính</div>
+            <a th:href="@{/admin/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            
+            <div class="menu-label">Nội dung</div>
+            <a th:href="@{/admin/dashboard}" class="menu-item"><i class="fa-solid fa-file-lines"></i> Bài viết</a>
+            <a th:href="@{/admin/categories}" class="menu-item"><i class="fa-solid fa-folder-tree"></i> Chuyên mục</a>
+            <a th:href="@{/admin/comments}" class="menu-item"><i class="fa-solid fa-comment-dots"></i> Bình luận</a>
+            
+            <div class="menu-label">Hệ thống</div>
+            <a th:href="@{/admin/users}" class="menu-item active"><i class="fa-solid fa-users-gear"></i> Người dùng</a>
+            <a th:href="@{/admin/settings}" class="menu-item"><i class="fa-solid fa-gear"></i> Cài đặt</a>
+        </nav>
+
+        <div class="logout-section">
+            <a th:href="@{/logout}" class="logout-item">
+                <i class="fa-solid fa-power-off"></i> Đăng xuất
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-nav">
+            <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Admin / <span style="color: var(--primary); font-weight: 700;">Người dùng</span></div>
+            <a th:href="@{/admin/settings}" class="admin-profile">
+                <div style="text-align: right;">
+                    <span class="name" th:text="${session.username}">Quản trị viên</span>
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">ADMINISTRATOR</span>
+                </div>
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${session.username} + '&background=0ea5e9&color=fff'" alt="Avatar">
+            </a>
+        </div>
+
+        <div class="header-title-row">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a th:href="@{/admin/dashboard}" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+                <h1>Danh sách thành viên</h1>
+            </div>
+            <a th:href="@{/admin/users/add}" class="btn-add-user"><i class="fa-solid fa-plus"></i> Thêm thành viên</a>
+        </div>
+
+        <div class="card-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Người dùng</th>
+                        <th>Vai trò</th>
+                        <th>Ngày tham gia</th>
+                        <th style="text-align: right;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div class="user-avatar" th:text="${#strings.substring(user.username,0,1).toUpperCase()}">U</div>
+                                <div style="font-weight: 700;" th:text="${user.username}">User</div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge" th:text="${user.role}">USER</span></td>
+                        <td style="font-size: 13px; color: var(--text-muted);">14/05/2026</td>
+                        <td style="text-align: right;">
+                            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn-icon edit-user" title="Sửa"><i class="fa-solid fa-user-pen"></i></a>
+                            <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="btn-icon delete-user" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')"><i class="fa-solid fa-user-xmark"></i></a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="4" style="text-align: center; padding: 60px; color: var(--text-muted);">
+                            <i class="fa-solid fa-user-slash" style="font-size: 30px; display: block; margin-bottom: 10px; opacity: 0.3;"></i>
+                            Chưa có thành viên nào.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản trị - NEWS PANEL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --sidebar-bg: #111827;
+            --primary: #38bdf8;
+            --bg-body: #f8fafc;
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-body); display: flex; min-height: 100vh; color: var(--text-main); font-size: 14px; }
+        
+        /* SIDEBAR */
+        .sidebar { width: 260px; background: var(--sidebar-bg); min-height: 100vh; color: white; position: fixed; display: flex; flex-direction: column; z-index: 1000; }
+        .logo { padding: 35px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo h2 { margin: 0; color: var(--primary); font-size: 20px; font-weight: 800; letter-spacing: 1px; }
+        
+        .menu-scroll { flex: 1; padding-top: 10px; }
+        .menu-label { padding: 20px 25px 8px; font-size: 11px; text-transform: uppercase; color: #4b5563; font-weight: 700; letter-spacing: 1px; }
+        .menu-item { padding: 10px 25px; display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; transition: 0.2s; font-size: 13.5px; }
+        .menu-item:hover { color: white; background: rgba(255,255,255,0.03); }
+        .menu-item.active { background: rgba(56, 189, 248, 0.1); color: var(--primary); font-weight: 600; border-left: 3px solid var(--primary); }
+        
+        .badge-count { margin-left: auto; background: #ef4444; color: white; font-size: 10px; padding: 1px 6px; border-radius: 5px; font-weight: 700; }
+
+        .sidebar-footer { margin-top: auto; padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+        .logout-item { padding: 12px 25px; display: flex; align-items: center; gap: 12px; color: #f87171; text-decoration: none; font-weight: 600; font-size: 13.5px; }
+
+        /* MAIN CONTENT */
+        .main-content { margin-left: 260px; flex: 1; padding: 0 35px 35px; min-width: 0; }
+        
+        /* TOP NAV chuẩn Breadcrumb */
+        .top-nav { background: transparent; margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .breadcrumb { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .breadcrumb span { color: var(--primary); font-weight: 600; }
+
+        .admin-profile { display: flex; align-items: center; gap: 10px; }
+        .admin-profile .info { text-align: right; }
+        .admin-profile .name { display: block; font-weight: 700; font-size: 14px; color: #1e293b; margin-bottom: -2px; }
+        .admin-profile .role { display: block; font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .admin-profile .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid #e0f2fe; box-shadow: 0 0 0 1px #38bdf8; font-size: 13px; }
+
+        .page-header { margin-bottom: 25px; }
+        .page-header h1 { font-size: 26px; font-weight: 800; margin: 0; color: #0f172a; }
+
+        /* STAT CARDS */
+        .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 25px; }
+        .stat-card { background: var(--white); padding: 15px 20px; border-radius: 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .stat-card i { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .stat-info h4 { margin: 0; font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .stat-info p { margin: 0; font-size: 20px; font-weight: 800; color: #0f172a; }
+
+        .bg-blue { background: #f0f9ff; color: #0ea5e9; }
+        .bg-green { background: #f0fdf4; color: #22c55e; }
+        .bg-purple { background: #faf5ff; color: #a855f7; }
+        .bg-status { background: var(--primary); color: #0f172a; }
+
+        /* GRID BOXES */
+        .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .card-box { background: var(--white); padding: 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .table-header h2 { margin: 0; font-size: 15px; font-weight: 800; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 10px; color: var(--text-muted); font-size: 10px; text-transform: uppercase; border-bottom: 1px solid var(--border); letter-spacing: 0.5px; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f8fafc; font-size: 13px; }
+        
+        .post-title-static { font-weight: 600; font-size: 13.5px; color: #1e293b; margin-bottom: 3px; display: block; }
+        .post-meta { font-size: 11px; color: var(--text-muted); }
+
+        .activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f8fafc; }
+        .activity-item:last-child { border: none; }
+        .activity-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+        .activity-info p { margin: 0; font-size: 13px; }
+        .activity-info small { color: var(--text-muted); font-size: 11px; }
+
+        .btn-view-all { width: 100%; margin-top: 15px; padding: 10px; background: none; border: 1px dashed var(--border); border-radius: 10px; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 12px; transition: 0.2s; }
+        .btn-view-all:hover { border-color: var(--primary); color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2><i class="fa-solid fa-newspaper"></i> NEWS PANEL</h2>
+        </div>
+        <div class="menu-scroll">
+            <div class="menu-label">CHÍNH</div>
+            <a th:href="@{/admin/dashboard}" class="menu-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            
+            <div class="menu-label">NỘI DUNG</div>
+            <!-- Link đã sửa trỏ về trang danh sách bài viết -->
+            <a th:href="@{/admin/posts}" class="menu-item">
+                <i class="fa-solid fa-file-lines"></i> Bài viết 
+                <span class="badge-count" th:text="${totalPosts}">0</span>
+            </a>
+            <a th:href="@{/admin/categories}" class="menu-item">
+                <i class="fa-solid fa-layer-group"></i> Chuyên mục
+                <span class="badge-count" style="background: #a855f7;" th:text="${totalCategories}">0</span>
+            </a>
+            <a th:href="@{/admin/comments}" class="menu-item">
+                <i class="fa-solid fa-comment-dots"></i> Bình luận
+                <span class="badge-count" style="background: #0ea5e9;" th:text="${totalComments}">0</span>
+            </a>
+            
+            <div class="menu-label">HỆ THỐNG</div>
+            <a th:href="@{/admin/users}" class="menu-item"><i class="fa-solid fa-user-group"></i> Người dùng</a>
+            <a th:href="@{/admin/settings}" class="menu-item"><i class="fa-solid fa-gear"></i> Cài đặt</a>
+        </div>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="logout-item"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- TOP NAV chuẩn -->
+        <div class="top-nav">
+            <div class="breadcrumb">Quản trị / <span>Dashboard</span></div>
+            <div class="admin-profile">
+                <div class="info">
+                    <span class="name" th:text="${session.username}">Quản trị viên</span>
+                    <span class="role">ADMINISTRATOR</span>
+                </div>
+                <div class="avatar" th:text="${#strings.substring(session.username,0,2).toUpperCase()}">QV</div>
+            </div>
+        </div>
+
+        <div class="page-header">
+            <h1>Tổng quan hệ thống</h1>
+            <small style="color: var(--text-muted); font-size: 12px;">Dữ liệu cập nhật thời gian thực</small>
+        </div>
+
+        <div class="stat-cards">
+            <div class="stat-card">
+                <i class="fa-solid fa-file-lines bg-blue"></i>
+                <div class="stat-info"><h4>Bài viết</h4><p th:text="${totalPosts}">0</p></div>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-folder-open bg-green"></i>
+                <div class="stat-info"><h4>Chuyên mục</h4><p th:text="${totalCategories}">0</p></div>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-comments bg-purple"></i>
+                <div class="stat-info"><h4>Bình luận</h4><p th:text="${totalComments}">0</p></div>
+            </div>
+            <div class="stat-card bg-status">
+                <i class="fa-solid fa-bolt" style="color: #0f172a;"></i>
+                <div class="stat-info"><h4>Hệ thống</h4><p style="color: #0f172a;">Online</p></div>
+            </div>
+        </div>
+
+        <div class="bottom-grid">
+            <div class="card-box">
+                <div class="table-header">
+                    <h2>Bài viết mới nhất (Xem nhanh)</h2>
+                    <a th:href="@{/admin/posts}" style="color: var(--primary); font-size: 12px; font-weight: 700; text-decoration: none;">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>NỘI DUNG</th><th style="text-align: right;">THỜI GIAN</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${posts}">
+                            <td>
+                                <span class="post-title-static" th:text="${p.title}">Tiêu đề</span>
+                                <div class="post-meta">
+                                    <i class="fa-regular fa-user"></i> <span th:text="${p.author}"></span> | 
+                                    <i class="fa-solid fa-tag"></i> <span th:text="${p.category != null ? p.category.name : 'Chưa phân loại'}"></span>
+                                </div>
+                            </td>
+                            <td style="text-align: right; color: var(--text-muted); font-size: 12px;">Hôm nay</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-box">
+                <h2>Hoạt động</h2>
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: #f0fdf4; color: #22c55e;"><i class="fa-solid fa-check"></i></div>
+                    <div class="activity-info">
+                        <p>Hệ thống đã sẵn sàng</p>
+                        <small>Vừa xong</small>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: #f0f9ff; color: #0ea5e9;"><i class="fa-solid fa-sync"></i></div>
+                    <div class="activity-info">
+                        <p>Dữ liệu đã đồng bộ</p>
+                        <small>15 phút trước</small>
+                    </div>
+                </div>
+                <button class="btn-view-all">Xem toàn bộ lịch sử</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

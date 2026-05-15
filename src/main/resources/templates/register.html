@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký thành viên - NewsApp</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="login-page">
+    <!-- PHẦN BÊN TRÁI -->
+    <div class="login-left">
+        <div class="overlay"></div>
+        <div class="left-content">
+            <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+                <h1 style="cursor: pointer; margin-bottom: 20px;">📰 NewsApp</h1>
+            </a>
+            <h2>Gia nhập cộng đồng!</h2>
+            <p style="line-height: 1.6; margin-bottom: 30px; opacity: 0.9;">
+                Tạo tài khoản ngay để không bỏ lỡ những tin tức nóng hổi và tương tác cùng cộng đồng.
+            </p>
+            <div class="feature-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <div>✔ Lưu trữ bài viết yêu thích</div>
+                <div>✔ Nhận thông báo tin nóng 24/7</div>
+                <div>✔ Tham gia thảo luận cộng đồng</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHẦN BÊN PHẢI -->
+    <div class="login-right">
+        <div class="login-box">
+            <div style="text-align: left; margin-bottom: 25px;">
+                <a th:href="@{/}" style="text-decoration: none; color: #64748b; font-size: 14px; font-weight: 500;">
+                    ← Quay về trang chủ
+                </a>
+            </div>
+
+            <h2 style="font-size: 32px; margin-bottom: 10px; color: #0f172a;">Đăng ký</h2>
+            <p style="margin-bottom: 30px; color: #64748b;">Trở thành hội viên của NewsApp chỉ trong vài giây</p>
+
+            <form class="login-form" th:action="@{/register}" method="post" style="display: flex; flex-direction: column; gap: 18px;">
+                
+                <div class="form-group" style="text-align: left;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b;">Họ và tên</label>
+                    <input type="text" name="fullName" placeholder="VD: Nguyễn Văn A" 
+                           style="width: 100%; padding: 13px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none;" required autofocus>
+                </div>
+
+                <div class="form-group" style="text-align: left;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b;">Tên đăng nhập</label>
+                    <input type="text" name="username" placeholder="Sử dụng để đăng nhập..." 
+                           style="width: 100%; padding: 13px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none;" required>
+                </div>
+
+                <div class="form-group" style="text-align: left;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b;">Email</label>
+                    <input type="email" name="email" placeholder="example@gmail.com" 
+                           style="width: 100%; padding: 13px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none;" required>
+                </div>
+
+                <!-- MẬT KHẨU (ĐÃ THÊM NÚT HIỆN/ẨN) -->
+                <div class="form-group" style="text-align: left;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b;">Mật khẩu</label>
+                    <div style="position: relative;">
+                        <input type="password" id="regPassword" name="password" placeholder="Tối thiểu 6 ký tự" 
+                               style="width: 100%; padding: 13px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none; padding-right: 45px;" required>
+                        <span id="toggleRegPassword" 
+                              style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b; font-size: 18px; user-select: none;">
+                            👁️
+                        </span>
+                    </div>
+                </div>
+
+                <div style="text-align: left; font-size: 13px; color: #64748b;">
+                    <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" required style="margin-top: 3px;">
+                        <span>Tôi đồng ý với các Điều khoản dịch vụ và Chính sách bảo mật.</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="login-btn" 
+                        style="width: 100%; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 700; margin-top: 10px;">
+                    Tạo tài khoản
+                </button>
+
+                <div style="text-align: center; margin-top: 5px; font-size: 15px; color: #64748b;">
+                    Đã có tài khoản? 
+                    <a th:href="@{/login}" style="color: #2563eb; font-weight: 700; text-decoration: none; margin-left: 5px;">
+                        Đăng nhập ngay
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Logic cho trang đăng ký
+    const toggleRegPassword = document.querySelector('#toggleRegPassword');
+    const regPassword = document.querySelector('#regPassword');
+
+    toggleRegPassword.addEventListener('click', function () {
+        const type = regPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+        regPassword.setAttribute('type', type);
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+</script>
+
+</body>
+</html>

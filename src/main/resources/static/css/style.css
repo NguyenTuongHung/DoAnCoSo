@@ -1,0 +1,362 @@
+/* ========================================
+   ADMIN LAYOUT
+======================================== */
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+
+.admin-sidebar {
+    width: 290px;
+    background: linear-gradient(180deg,#071028,#0b1736);
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.admin-logo {
+    height: 95px;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    font-size: 32px; /* GIẢM */
+    font-weight: 900;
+    color: #1da1ff;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.admin-menu {
+    padding-top: 25px;
+}
+
+.admin-menu-title {
+    padding: 18px 35px 10px;
+    font-size: 14px; /* TĂNG */
+    font-weight: 800;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-menu a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 35px;
+    color: #dbeafe;
+    text-decoration: none;
+    font-size: 22px; /* TĂNG TO */
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.admin-menu a i {
+    font-size: 22px;
+    width: 26px;
+}
+
+.admin-menu a:hover {
+    background: rgba(255,255,255,0.05);
+    color: #38bdf8;
+}
+
+.admin-menu a.active {
+    background: rgba(56,189,248,0.12);
+    border-left: 4px solid #0ea5e9;
+    color: #38bdf8;
+}
+
+/* ===== MAIN ===== */
+
+.admin-main {
+    margin-left: 290px;
+    width: calc(100% - 290px);
+    background: #f1f5f9;
+    min-height: 100vh;
+}
+
+/* ===== TOPBAR ===== */
+
+.admin-topbar {
+    height: 95px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 45px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.admin-user h4 {
+    font-size: 22px; /* TĂNG */
+    margin: 0;
+}
+
+.admin-user span {
+    font-size: 14px;
+}
+
+.admin-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #0ea5e9;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 22px;
+}
+
+/* ===== CONTENT ===== */
+
+.admin-content {
+    padding: 40px 45px;
+}
+
+/* ===== PAGE HEADER ===== */
+
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 35px;
+}
+
+.page-title {
+    font-size: 48px; /* TO HƠN */
+    font-weight: 900;
+    color: #0f172a;
+}
+
+/* ===== DASHBOARD BUTTON ===== */
+
+.back-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 16px 28px;
+    border-radius: 18px;
+    text-decoration: none;
+    color: #64748b;
+    font-size: 18px; /* TĂNG */
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.back-dashboard i {
+    font-size: 18px;
+}
+
+/* ===== STATS ===== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.stat-box {
+    background: white;
+    border-radius: 28px;
+    padding: 35px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.stat-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0ea5e9;
+    font-size: 30px;
+}
+
+.stat-info h4 {
+    font-size: 16px; /* TĂNG */
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.stat-info h2 {
+    font-size: 42px;
+    font-weight: 900;
+}
+
+/* ===== CARD ===== */
+
+.admin-card {
+    background: white;
+    border-radius: 32px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+/* ===== CARD HEADER ===== */
+
+.card-header {
+    padding: 30px 35px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 26px; /* TO */
+    font-weight: 800;
+}
+
+/* ===== SEARCH ===== */
+
+.search-box {
+    width: 360px;
+    height: 60px;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 0 20px;
+    outline: none;
+    font-size: 18px; /* TO */
+}
+
+/* ===== TABLE ===== */
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 24px 35px;
+    color: #64748b;
+    font-size: 16px; /* TĂNG */
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table td {
+    padding: 30px 35px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 20px; /* TĂNG */
+    font-weight: 600;
+}
+
+/* ===== BUTTONS ===== */
+
+.primary-btn {
+    background: #0ea5e9;
+    color: white;
+    border: none;
+    border-radius: 18px;
+    padding: 16px 30px;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #0284c7;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ===== EMPTY STATE ===== */
+
+.empty-state {
+    text-align: center;
+    padding: 100px 20px;
+    color: #94a3b8;
+}
+
+.empty-state i {
+    font-size: 70px;
+}
+
+.empty-state h3 {
+    margin-top: 18px;
+    color: #0f172a;
+    font-size: 38px;
+}
+
+.empty-state p {
+    font-size: 18px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:1200px){
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .admin-sidebar{
+        width:240px;
+    }
+
+    .admin-main{
+        margin-left:240px;
+        width:calc(100% - 240px);
+    }
+
+    .admin-menu a{
+        font-size:18px;
+    }
+}
+
+@media(max-width:768px){
+
+    .admin-sidebar{
+        display:none;
+    }
+
+    .admin-main{
+        margin-left:0;
+        width:100%;
+    }
+
+    .card-header{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .search-box{
+        width:100%;
+    }
+
+    .page-title{
+        font-size:34px;
+    }
+}

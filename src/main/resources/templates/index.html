@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsApp - Tin tức 24/7</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-hover: #0284c7;
+            --dark: #0f172a;
+            --gray-light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f1f5f9; 
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* NAVBAR */
+        .navbar { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%; background: #fff; position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo-link { text-decoration: none; display: flex; align-items: center; }
+        .logo { color: var(--primary); font-weight: 800; font-size: 24px; }
+        
+        .menu { display: flex; gap: 25px; }
+        .menu a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 15px; transition: 0.3s; }
+        .menu a:hover { color: var(--primary); }
+
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .btn-text { background: none; border: none; font-weight: 600; cursor: pointer; color: var(--dark); padding: 8px 15px; border-radius: 8px; transition: 0.3s; }
+        .btn-text:hover { background: var(--gray-light); }
+        .btn-fill { background: var(--gray-light); border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-fill:hover { background: var(--border); }
+        .add-btn { background: #ef4444; color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .add-btn:hover { background: #dc2626; transform: translateY(-2px); }
+
+        /* HERO SECTION */
+        .hero { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; 
+            padding: 60px 0; margin-bottom: 40px;
+        }
+        .hero-left span { background: #e0f2fe; color: var(--primary); padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 12px; display: inline-block; }
+        .hero-left h1 { font-size: 44px; line-height: 1.1; font-weight: 800; color: var(--dark); margin: 20px 0; }
+        .hero-left p { color: var(--gray); font-size: 18px; margin-bottom: 30px; }
+        .hero-buttons { display: flex; gap: 15px; }
+        .hero-btn-primary { background: var(--primary); color: #fff; border: none; padding: 16px 32px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        .hero-btn-primary:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: var(--shadow); }
+        .hero-btn-outline { background: #fff; border: 2px solid var(--border); padding: 14px 30px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        .hero-btn-outline:hover { background: var(--gray-light); }
+        .hero-right img { width: 100%; border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); transition: 0.5s; }
+        .hero-right img:hover { transform: scale(1.02); }
+
+        /* SECTION HEADERS */
+        .section-header { margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .section-title { font-size: 28px; font-weight: 800; color: var(--dark); }
+        .line { flex-grow: 1; height: 2px; background: var(--border); }
+
+        /* CARDS LOGIC */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .news-card {
+            background: #fff; border-radius: 20px; overflow: hidden;
+            display: flex; flex-direction: column; height: 100%;
+            transition: 0.3s ease; border: 1px solid var(--border);
+        }
+        .news-card:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
+        .card-img-wrapper { width: 100%; height: 210px; overflow: hidden; }
+        .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .news-card:hover .card-img-wrapper img { transform: scale(1.1); }
+        
+        .card-body { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
+        .category { color: var(--primary); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
+        .news-link { text-decoration: none; color: var(--dark); }
+        .news-link h3 { 
+            font-size: 19px; margin-bottom: 12px; font-weight: 700; line-height: 1.4;
+            display: -webkit-box; /* Thêm dòng line-clamp tiêu chuẩn ngay phía dưới */
+-webkit-line-clamp: 2;
+line-clamp: 2;; -webkit-box-orient: vertical; overflow: hidden;
+            transition: 0.3s;
+        }
+        .news-link:hover h3 { color: var(--primary); }
+        .card-body p { font-size: 14px; color: var(--gray); flex-grow: 1; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid var(--gray-light); }
+        .author { font-size: 13px; font-weight: 600; color: var(--dark); }
+        .read-more { font-size: 13px; color: var(--primary); font-weight: 700; text-decoration: none; }
+
+        /* MAIN CONTENT LAYOUT */
+        .main-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 40px; margin-top: 50px; }
+        .posts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+
+        /* SIDEBAR */
+        .sidebar { position: sticky; top: 100px; height: fit-content; }
+        .sidebar-box { background: #fff; padding: 30px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 30px; }
+        .sidebar h3 { font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .sidebar ul { list-style: none; }
+        .sidebar li { padding: 15px 0; border-bottom: 1px solid var(--gray-light); cursor: pointer; transition: 0.3s; font-weight: 500; font-size: 15px; }
+        .sidebar li:last-child { border: none; }
+        .sidebar li:hover { color: var(--primary); transform: translateX(5px); }
+        .premium-card { background: var(--dark); color: #fff; padding: 30px; border-radius: 24px; text-align: center; }
+        .premium-card h4 { margin-bottom: 10px; color: #38bdf8; }
+        .premium-btn { background: var(--primary); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+        .premium-btn:hover { background: var(--primary-hover); }
+
+        /* VIDEO SECTION */
+        .video-section { margin: 80px 0; }
+        .video-card { background: #fff; border-radius: 24px; overflow: hidden; border: 1px solid var(--border); }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .video-info { padding: 20px; }
+
+        /* FOOTER */
+        .footer { background: var(--dark); color: #fff; padding: 80px 0 40px; margin-top: 80px; }
+        .footer-grid { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .footer h2 { font-size: 30px; margin-bottom: 15px; }
+        .footer p { opacity: 0.7; max-width: 600px; margin-bottom: 40px; }
+        .footer-links { display: flex; gap: 30px; margin-bottom: 40px; }
+        .footer-links a { color: #fff; text-decoration: none; opacity: 0.8; transition: 0.3s; font-weight: 500; }
+        .footer-links a:hover { opacity: 1; color: var(--primary); }
+        .copyright { font-size: 13px; opacity: 0.4; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; width: 100%; }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .hero { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+            .hero-buttons { justify-content: center; }
+            .main-layout { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .menu { display: none; }
+            .posts-grid, .grid-3 { grid-template-columns: 1fr; }
+            .hero-left h1 { font-size: 32px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a th:href="@{/}" class="logo-link">
+                <h2 class="logo">📰 NewsApp</h2>
+            </a>
+        </div>
+
+        <nav class="menu">
+            <a th:href="@{/}">Trang chủ</a>
+            <a href="#">Thời sự</a>
+            <a href="#">Công nghệ</a>
+            <a href="#">Giải trí</a>
+            <a href="#">Thể thao</a>
+            <a href="#">Kinh doanh</a>
+            <a href="#">Sức khỏe</a>
+            <a href="#">Du lịch</a>
+            <a href="#">Giáo dục</a>
+            <a href="#">Khác</a>
+        </nav>
+
+        <div class="nav-right">
+            <a th:href="@{/login}"><button class="btn-text">Đăng nhập</button></a>
+            <a th:href="@{/register}"><button class="btn-fill">Đăng ký</button></a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-left">
+                <span>🔥 TIN NÓNG MỖI NGÀY</span>
+                <h1>Cập nhật tin tức nhanh chóng & hiện đại</h1>
+                <p>Khám phá thế giới qua những bản tin công nghệ, tài chính và đời sống được cập nhật liên tục 24/7 từ đội ngũ NewsApp.</p>
+                <div class="hero-buttons">
+                    <button class="hero-btn-primary">Khám phá ngay</button>
+                    <button class="hero-btn-outline">Xem tin nổi bật</button>
+                </div>
+            </div>
+            <div class="hero-right">
+                <img src="https://picsum.photos/700/450?random=20" alt="hero image">
+            </div>
+        </section>
+
+        <!-- FEATURED SECTION -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">🔥 Tin nổi bật</h2>
+                <div class="line"></div>
+            </div>
+
+            <div class="grid-3">
+                <!-- Hiển thị tối đa 3 bài nổi bật -->
+                <article class="news-card" th:each="post, iter : ${featuredPosts}" th:if="${iter.index < 3}">
+                    <div class="card-img-wrapper">
+                        <img th:src="${post.imageUrl != null && post.imageUrl != '' ? post.imageUrl : 'https://picsum.photos/500/300'}" alt="featured news">
+                    </div>
+                    <div class="card-body">
+                        <span class="category" th:text="${post.category}">Công nghệ</span>
+                        <a th:href="@{/tin-tuc/{id}(id=${post.id})}" class="news-link">
+                            <h3 th:text="${post.title}">Tiêu đề bài viết nổi bật</h3>
+                        </a>
+                        <p th:text="${post.summary}">Tóm tắt ngắn gọn nội dung bài viết nổi bật hôm nay...</p>
+                        <div class="card-footer">
+                            <span class="author">✍ <strong th:text="${post.author}">Admin</strong></span>
+                            <a th:href="@{/tin-tuc/{id}(id=${post.id})}" class="read-more">Đọc tiếp →</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- MAIN CONTENT LAYOUT -->
+        <div class="main-layout">
+            <!-- POSTS LIST -->
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title">📰 Mới cập nhật</h2>
+                    <div class="line"></div>
+                </div>
+
+                <div class="posts-grid">
+                    <article class="news-card" th:each="post : ${posts}">
+                        <div class="card-img-wrapper">
+                            <img th:src="${post.imageUrl != null && post.imageUrl != '' ? post.imageUrl : 'https://picsum.photos/500/300'}" alt="news">
+                        </div>
+                        <div class="card-body">
+                            <span class="category" th:text="${post.category}">Đời sống</span>
+                            <a th:href="@{/tin-tuc/{id}(id=${post.id})}" class="news-link">
+                                <h3 th:text="${post.title}">Tiêu đề bài viết mới nhất</h3>
+                            </a>
+                            <p th:text="${post.summary}">Mô tả ngắn về bài viết vừa được cập nhật trên hệ thống...</p>
+                            <div class="card-footer">
+                                <span class="author">✍ <strong th:text="${post.author}">Admin</strong></span>
+                                <a th:href="@{/tin-tuc/{id}(id=${post.id})}" class="read-more">Xem thêm</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="sidebar-box">
+                    <h3>🌍 Xu hướng</h3>
+                    <ul>
+                        <li>🤖 AI đang thay đổi ngành lập trình</li>
+                        <li>📱 iPhone 16 có gì mới?</li>
+                        <li>💰 Giá Bitcoin lập đỉnh mới</li>
+                        <li>✈ Du lịch Việt Nam tăng trưởng mạnh</li>
+                        <li>🚀 Startup xanh gọi vốn thành công</li>
+                    </ul>
+                </div>
+
+                <div class="premium-card">
+                    <h4>📢 NewsApp Premium</h4>
+                    <p style="font-size: 14px; margin-top: 10px;">Đọc tin tức không quảng cáo và nhận bản tin chuyên sâu mỗi sáng.</p>
+                    <button class="premium-btn">Nâng cấp ngay</button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- VIDEO SECTION -->
+        <section class="video-section">
+            <div class="section-header">
+                <h2 class="section-title">🎥 Video nổi bật</h2>
+                <div class="line"></div>
+            </div>
+
+            <div class="grid-3">
+                <div class="video-card" th:each="i : ${#numbers.sequence(1, 3)}">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <span class="category">Công nghệ</span>
+                        <h4 style="margin-top: 10px;">Tương lai của Trí tuệ nhân tạo 2026</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <h2>📰 NewsApp</h2>
+            <p>Trang tin tức điện tử hiện đại cung cấp thông tin nhanh chóng, chính xác và đa chiều về mọi lĩnh vực trong đời sống.</p>
+            
+            <div class="footer-links">
+                <a href="#">Về chúng tôi</a>
+                <a href="#">Liên hệ quảng cáo</a>
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+            </div>
+
+            <div class="copyright">
+                © 2026 NewsApp Project. Phát triển trên nền tảng Spring Boot & MySQL.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

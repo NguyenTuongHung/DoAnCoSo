@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin thành viên - NewsApp</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+
+        <div class="admin-logo">
+            <i class="fa-solid fa-newspaper"></i>
+            NEWS PANEL
+        </div>
+
+        <div class="admin-menu">
+
+            <div class="admin-menu-title">
+                CHÍNH
+            </div>
+
+            <a th:href="@{/admin/dashboard}">
+                <i class="fa-solid fa-chart-pie"></i>
+                Dashboard
+            </a>
+
+            <div class="admin-menu-title">
+                QUẢN LÝ
+            </div>
+
+            <a th:href="@{/admin/posts}">
+                <i class="fa-solid fa-file-lines"></i>
+                Bài viết
+            </a>
+
+            <a th:href="@{/admin/categories}">
+                <i class="fa-solid fa-layer-group"></i>
+                Chuyên mục
+            </a>
+
+            <a th:href="@{/admin/comments}">
+                <i class="fa-solid fa-comments"></i>
+                Bình luận
+            </a>
+
+            <a th:href="@{/admin/users}" class="active">
+                <i class="fa-solid fa-users"></i>
+                Người dùng
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+
+        <!-- TOPBAR -->
+        <div class="admin-topbar">
+
+            <div>
+                Admin / Người dùng
+            </div>
+
+            <div class="admin-user">
+
+                <div>
+                    <strong>Quản trị viên</strong>
+                </div>
+
+                <div class="admin-avatar">
+                    QV
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CONTENT -->
+        <div class="admin-content">
+
+            <a th:href="@{/admin/users}" class="back-dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+                Quay lại
+            </a>
+
+            <div class="page-head">
+
+                <h1 class="page-title">
+                    <span th:text="${user.id != null ? 'Cập nhật thành viên' : 'Thêm thành viên'}">
+                        Thành viên
+                    </span>
+                </h1>
+
+            </div>
+
+            <!-- FORM CARD -->
+            <div class="admin-card"
+                 style="max-width:700px;padding:40px;margin:auto;">
+
+                <form th:action="@{/admin/users/save}"
+                      th:object="${user}"
+                      method="post">
+
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="form-group">
+
+                        <label>Tên đăng nhập</label>
+
+                        <input type="text"
+                               th:field="*{username}"
+                               class="search-box"
+                               placeholder="Nhập username..."
+                               required>
+
+                    </div>
+
+                    <br>
+
+                    <div class="form-group">
+
+                        <label>Email</label>
+
+                        <input type="email"
+                               th:field="*{email}"
+                               class="search-box"
+                               placeholder="example@gmail.com"
+                               required>
+
+                    </div>
+
+                    <br>
+
+                    <div class="form-group">
+
+                        <label>Mật khẩu</label>
+
+                        <input type="password"
+                               th:field="*{password}"
+                               class="search-box"
+                               placeholder="Nhập mật khẩu..."
+                               required>
+
+                    </div>
+
+                    <br>
+
+                    <div class="form-group">
+
+                        <label>Vai trò</label>
+
+                        <select th:field="*{role}"
+                                class="search-box">
+
+                            <option value="USER">
+                                Người dùng (USER)
+                            </option>
+
+                            <option value="ADMIN">
+                                Quản trị viên (ADMIN)
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <br><br>
+
+                    <button type="submit"
+                            class="primary-btn"
+                            style="width:100%;height:60px;font-size:18px;">
+
+                        <span th:text="${user.id != null ? 'Cập nhật' : 'Lưu thành viên'}">
+                            Lưu
+                        </span>
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

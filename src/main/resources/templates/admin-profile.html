@@ -1,0 +1,11 @@
+<div class="admin-profile-container">
+    <!-- Thẻ a này giúp toàn bộ phần profile có thể click được -->
+    <a th:href="@{/admin/settings}" class="admin-profile" title="Cài đặt tài khoản">
+        <div class="info">
+            <span class="name" th:text="${session.username}">Quản trị viên</span>
+            <span class="role">ADMIN</span>
+        </div>
+        <!-- Avatar sử dụng API tự động tạo theo tên -->
+        <img th:src="'https://ui-avatars.com/api/?name=' + ${session.username} + '&background=0ea5e9&color=fff'" alt="Admin">
+    </a>
+</div>

@@ -7,6 +7,7 @@ import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.CommentRepository;
+import com.example.demo.model.Comment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -381,4 +382,30 @@ public String showEditUserPage(@PathVariable Long id, Model model, HttpSession s
 
         return "redirect:/admin/profile?success=true";
     }
+
+    @PostMapping("/tin-tuc/comment/save")
+public String saveComment(@RequestParam Long postId, 
+                          @RequestParam String content, 
+                          HttpSession session) {
+    
+    // Kiểm tra đăng nhập
+    String username = (String) session.getAttribute("username");
+    if (username == null) return "redirect:/login";
+
+    // Tìm bài viết theo ID
+    Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("Bài viết không tồn tại"));
+
+    // Tạo bình luận mới
+    Comment comment = new Comment();
+    comment.setContent(content);
+    comment.setUsername(username);
+    comment.setPost(post);
+    
+    // Lưu vào database
+    commentRepository.save(comment);
+    
+    return "redirect:/tin-tuc/" + postId;
+}
+
 }

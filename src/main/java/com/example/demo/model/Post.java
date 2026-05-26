@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.util.List; // Nhớ import thư viện này
 
 @Entity
 @Table(name = "posts")
@@ -15,7 +16,7 @@ public class Post {
 
     private String author;
 
-    private String description; // Đã thêm trường này để khớp với form
+    private String description;
 
     @Column(columnDefinition = "TEXT")
     private String summary;
@@ -28,6 +29,10 @@ public class Post {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    // Liên kết với Comment
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     // ===== Constructor =====
     public Post() {
@@ -67,4 +72,8 @@ public class Post {
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
+
+    // Getter & Setter cho comments
+    public List<Comment> getComments() { return comments; }
+    public void setComments(List<Comment> comments) { this.comments = comments; }
 }

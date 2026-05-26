@@ -331,16 +331,23 @@ public String showEditUserPage(@PathVariable Long id, Model model, HttpSession s
     // ================= COMMENTS =================
 
     @GetMapping("/admin/comments")
-    public String showAllComments(Model model, HttpSession session) {
-
-        if (!"ADMIN".equals(session.getAttribute("userRole"))) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("comments", commentRepository.findAll());
-
-        return "admin-comments";
+public String showAllComments(@RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) {
+    if (!"ADMIN".equals(session.getAttribute("userRole"))) {
+        return "redirect:/login";
     }
+
+    List<Comment> comments;
+    if (keyword != null && !keyword.isEmpty()) {
+        // Thực hiện lọc nếu có từ khóa
+        comments = commentRepository.findByContentContaining(keyword);
+    } else {
+        // Nếu không có, hiện tất cả
+        comments = commentRepository.findAll();
+    }
+
+    model.addAttribute("comments", comments);
+    return "admin-comments";
+}
 
     // ================= SETTINGS =================
 
@@ -382,6 +389,12 @@ public String showEditUserPage(@PathVariable Long id, Model model, HttpSession s
 
         return "redirect:/admin/profile?success=true";
     }
+
+    @GetMapping("/admin/comments/delete/{id}")
+public String deleteComment(@PathVariable("id") Long id) {
+    commentRepository.deleteById(id);
+    return "redirect:/admin/comments"; // Sau khi xóa xong quay về trang danh sách
+}
 
     @PostMapping("/tin-tuc/comment/save")
 public String saveComment(@RequestParam Long postId, 

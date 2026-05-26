@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng bài viết - NewsApp</title>
+  <link rel="stylesheet" href="css/create-post.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="logo">
+      <h2>📰 NewsApp</h2>
+    </div>
+
+    <div class="header-right">
+      <a href="index.html" class="home-btn">← Quay về trang chủ</a>
+      <div class="user-info">
+        <span>Xin chào, User</span>
+        <img src="https://i.pravatar.cc/50" alt="avatar">
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="create-post-container">
+
+    <!-- LEFT: FORM -->
+    <div class="post-form-section">
+      <h1>Đăng bài viết mới</h1>
+      <p>Chia sẻ nội dung của bạn với cộng đồng. Bài viết sẽ được admin kiểm duyệt trước khi hiển thị công khai.</p>
+
+      <form class="post-form">
+
+        <!-- Tiêu đề -->
+        <div class="form-group">
+          <label>Tiêu đề bài viết</label>
+          <input type="text" placeholder="Nhập tiêu đề bài viết...">
+        </div>
+
+        <!-- Ảnh đại diện -->
+        <div class="form-group">
+          <label>Ảnh đại diện bài viết</label>
+          <input type="file">
+        </div>
+
+        <!-- Danh mục -->
+        <div class="form-group">
+          <label>Danh mục</label>
+          <select>
+            <option>Công nghệ</option>
+            <option>Du lịch</option>
+            <option>Xe cộ</option>
+            <option>Đời sống</option>
+            <option>Pháp luật</option>
+            <option>Tài chính</option>
+            <option>Giải trí</option>
+          </select>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label>Tags</label>
+          <input type="text" placeholder="Ví dụ: AI, startup, du lịch...">
+        </div>
+
+        <!-- Mô tả ngắn -->
+        <div class="form-group">
+          <label>Mô tả ngắn</label>
+          <textarea rows="3" placeholder="Nhập mô tả ngắn cho bài viết..."></textarea>
+        </div>
+
+        <!-- Nội dung -->
+        <div class="form-group">
+          <label>Nội dung bài viết</label>
+          <textarea rows="10" placeholder="Viết nội dung chi tiết tại đây..."></textarea>
+        </div>
+
+        <!-- Upload ảnh phụ -->
+        <div class="form-group">
+          <label>Upload thêm hình ảnh</label>
+          <input type="file" multiple>
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="status-box">
+          <strong>Trạng thái mặc định:</strong>
+          <span class="pending-status">Chờ admin duyệt</span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-actions">
+          <button type="button" class="draft-btn">Lưu nháp</button>
+          <button type="submit" class="submit-btn">Gửi duyệt</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="post-sidebar">
+
+      <!-- Bài viết của tôi -->
+      <div class="sidebar-card">
+        <h3>Bài viết của tôi</h3>
+
+        <div class="post-status-item approved">
+          <span>✔ Đã duyệt</span>
+          <strong>12 bài</strong>
+        </div>
+
+        <div class="post-status-item pending">
+          <span>⏳ Chờ duyệt</span>
+          <strong>3 bài</strong>
+        </div>
+
+        <div class="post-status-item rejected">
+          <span>✖ Bị từ chối</span>
+          <strong>1 bài</strong>
+        </div>
+      </div>
+
+      <!-- Lưu ý -->
+      <div class="sidebar-card">
+        <h3>Lưu ý khi đăng bài</h3>
+        <ul>
+          <li>Không đăng nội dung vi phạm pháp luật</li>
+          <li>Không spam hoặc quảng cáo trái phép</li>
+          <li>Không sao chép nội dung từ nguồn khác</li>
+          <li>Admin sẽ kiểm duyệt trong vòng 24h</li>
+          <li>Bài viết chất lượng sẽ được ưu tiên hiển thị</li>
+        </ul>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <script src="js/create-post.js"></script>
+</body>
+</html>

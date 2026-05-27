@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ tác giả - NewsApp</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-hover: #0284c7;
+            --dark: #0f172a;
+            --gray-light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --gradient: linear-gradient(135deg, #2563eb, #c084fc, #db2777);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: var(--dark); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* NAVBAR */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: #fff; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo-link { text-decoration: none; display: flex; align-items: center; }
+        .logo { color: var(--primary); font-weight: 800; font-size: 24px; }
+        .menu { display: flex; gap: 25px; }
+        .menu a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 15px; }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .user-dropdown { position: relative; display: inline-block; }
+        .user-info-toggle { display: flex; align-items: center; gap: 10px; padding: 5px 15px; background: #f8fafc; border-radius: 50px; cursor: pointer; border: 1px solid var(--border); }
+        .user-avatar { width: 32px; height: 32px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+        .dropdown-content { position: absolute; right: 0; top: 120%; width: 220px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border); display: none; z-index: 1000; padding: 8px; }
+        .dropdown-content.show { display: block; }
+        .dropdown-content a { display: flex; align-items: center; gap: 10px; padding: 10px 15px; color: #475569; text-decoration: none; font-size: 14px; border-radius: 8px; }
+        .dropdown-content a:hover { background: #f0f9ff; color: var(--primary); }
+        .logout-link { color: #ef4444 !important; border-top: 1px solid #f1f5f9; margin-top: 5px; }
+
+        /* HEADER THÔNG TIN */
+        .profile-header-box { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; margin-bottom: 25px; }
+        .profile-header-left h1 { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .profile-header-left p { color: var(--gray); font-size: 14px; margin-top: 2px; }
+        .profile-actions { display: flex; gap: 12px; }
+        .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn-cancel:hover { background: #cbd5e1; }
+        .btn-save-main { background: #1e293b; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-save-main:hover { background: #0f172a; }
+
+        /* LAYOUT DASHBOARD */
+        .profile-dashboard-layout { display: grid; grid-template-columns: 260px 1fr; gap: 30px; margin-bottom: 60px; align-items: start; }
+
+        /* SIDEBAR TRÁI */
+        .profile-nav-sidebar { background: white; padding: 15px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .sidebar-menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #475569; text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 12px; margin-bottom: 5px; transition: 0.2s; }
+        .sidebar-menu-item:hover { background: #f1f5f9; color: var(--dark); }
+        .sidebar-menu-item.active { background: #1e293b; color: white; font-weight: 600; }
+
+        .profile-main-body { display: flex; flex-direction: column; gap: 30px; }
+
+        /* BANNER + AVATAR CARD */
+        .profile-banner-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; }
+        .cover-gradient { height: 180px; background: var(--gradient); position: relative; }
+        .btn-edit-cover { position: absolute; top: 15px; right: 15px; background: white; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+        .avatar-overlap-section { padding: 0 30px 25px; display: flex; align-items: flex-end; gap: 20px; position: relative; margin-top: -50px; }
+        .avatar-main-circle { width: 110px; height: 110px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .avatar-main-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-desc-text { color: var(--gray); font-size: 13px; margin-bottom: 12px; font-weight: 500; }
+
+        /* KHỐI NỘI DUNG FORM CHÍNH */
+        .info-card-content { background: white; padding: 35px; border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .card-inner-title { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 25px; }
+
+        /* --- CSS MỚI CHO CÁC PHẦN CHỈ SỐ THỐNG KÊ (STATS) --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-item { text-align: center; padding: 15px; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9; }
+        .stat-number { font-size: 22px; font-weight: 800; color: #1e293b; }
+        .stat-number.blue { color: #2563eb; }
+        .stat-number.green { color: #16a34a; }
+        .stat-number.orange { color: #ea580c; }
+        .stat-label { font-size: 12px; color: var(--gray); margin-top: 4px; font-weight: 500; }
+
+        /* FORM COMPONENTS */
+        .form-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-box-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-box-group.span-full { grid-column: span 2; }
+        .input-box-group label { font-size: 13px; font-weight: 600; color: #334155; }
+        .input-box-group label span { color: #ef4444; margin-left: 2px; }
+        .input-box-group input, .input-box-group textarea { padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 14px; color: #1e293b; }
+        .input-sub-tip { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+        /* CHECKBOX CHUYÊN MỤC */
+        .checkbox-container-list { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; margin-bottom: 15px; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #334155; cursor: pointer; font-weight: 500; }
+        .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: #1e293b; cursor: pointer; }
+
+        /* TAGS ĐIỀN CHUYÊN MÔN (TAGS INPUT) */
+        .tags-wrapper-box { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 10px; background: white; align-items: center; }
+        .tag-badge { display: flex; align-items: center; gap: 6px; background: #e2e8f0; color: #334155; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+        .tag-badge i { font-size: 11px; color: #64748b; cursor: pointer; }
+        .tag-badge i:hover { color: #ef4444; }
+        .tags-wrapper-box input { border: none !important; padding: 4px 0 !important; font-size: 14px; flex-grow: 1; min-width: 150px; }
+        .tags-wrapper-box input:focus { box-shadow: none !important; outline: none !important; }
+
+        /* KHỐI HỌC VẤN (EDUCATION BOX) */
+        .education-list-box { display: flex; flex-direction: column; gap: 15px; margin-bottom: 10px; }
+        .education-item-card { display: flex; justify-content: space-between; align-items: flex-start; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .edu-info-left h4 { font-size: 14px; font-weight: 700; color: #1e293b; }
+        .edu-info-left p { font-size: 13px; color: var(--gray); margin-top: 2px; }
+        .edu-info-left span { font-size: 12px; color: #94a3b8; display: block; margin-top: 4px; }
+        .btn-delete-edu { background: none; border: none; color: #94a3b8; cursor: pointer; transition: 0.2s; padding: 4px; }
+        .btn-delete-edu:hover { color: #ef4444; }
+        .btn-add-more-edu { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; color: var(--gray); font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; align-self: flex-end; }
+        .btn-add-more-edu:hover { color: #1e293b; }
+
+        /* FOOTER */
+        .footer { background: var(--dark); color: #fff; padding: 60px 0 40px; text-align: center; margin-top: 80px; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-left"><a th:href="@{/}" class="logo-link"><h2 class="logo">📰 NewsApp</h2></a></div>
+        <nav class="menu">
+            <a th:href="@{/}">Trang chủ</a><a href="#">Thời sự</a><a href="#">Công nghệ</a><a href="#">Giải trí</a>
+        </nav>
+        <div class="nav-right">
+            <div class="user-dropdown">
+                <div class="user-info-toggle" id="userToggle">
+                    <div class="user-avatar" th:text="${#strings.substring(session.username,0,1).toUpperCase()}">U</div>
+                    <span class="user-name" th:text="${session.username}">User</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--gray);"></i>
+                </div>
+                <div class="dropdown-content" id="userDropdown">
+                    <a th:href="@{/profile}"><i class="fa-regular fa-circle-user"></i> Hồ sơ cá nhân</a>
+                    <a th:href="@{/saved-posts}"><i class="fa-regular fa-bookmark"></i> Bài viết đã lưu</a>
+                    <a th:href="@{/logout}" class="logout-link"><i class="fa-solid fa-power-off"></i> Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-header-box">
+            <div class="profile-header-left">
+                <h1>Hồ sơ tác giả</h1>
+                <p>Quản lý thông tin cá nhân và tùy chọn đọc tin</p>
+            </div>
+            <div class="profile-actions">
+                <button class="btn-cancel" onclick="window.location.href='/'">✕ Hủy</button>
+                <button class="btn-save-main" onclick="document.getElementById('authorInfoForm').submit();">
+                    <i class="fa-regular fa-floppy-disk"></i> Lưu thay đổi
+                </button>
+            </div>
+        </div>
+
+        <div class="profile-dashboard-layout">
+            
+            <aside class="profile-nav-sidebar">
+                <a th:href="@{/profile}" class="sidebar-menu-item"><i class="fa-regular fa-user"></i> Thông tin cá nhân</a>
+                <a href="#" class="sidebar-menu-item active"><i class="fa-solid fa-pen-nib"></i> Hồ sơ tác giả</a>
+                <a href="#" class="sidebar-menu-item"><i class="fa-regular fa-book-open"></i> Sở thích đọc</a>
+                <a href="#" class="sidebar-menu-item"><i class="fa-regular fa-envelope"></i> Liên hệ</a>
+                <a href="#" class="sidebar-menu-item"><i class="fa-solid fa-hashtag"></i> Mạng xã hội</a>
+                <a href="#" class="sidebar-menu-item"><i class="fa-solid fa-lock"></i> Bảo mật</a>
+                <a href="#" class="sidebar-menu-item"><i class="fa-regular fa-eye-slash"></i> Quyền riêng tư</a>
+                <a href="#" class="sidebar-menu-item"><i class="fa-regular fa-bell"></i> Thông báo</a>
+            </aside>
+
+            <main class="profile-main-body">
+                
+                <div class="profile-banner-card">
+                    <div class="cover-gradient">
+                        <button class="btn-edit-cover" title="Đổi ảnh bìa"><i class="fa-solid fa-camera"></i></button>
+                    </div>
+                    <div class="avatar-overlap-section">
+                        <div class="avatar-main-circle">
+                            <th:block th:if="${session.userAvatar != null}">
+                                <img th:src="${session.userAvatar}" alt="Avatar">
+                            </th:block>
+                            <th:block th:if="${session.userAvatar == null}">
+                                <span th:text="${#strings.substring(session.username,0,1).toUpperCase()}">U</span>
+                            </th:block>
+                        </div>
+                        <div class="avatar-desc-text">
+                            Ảnh đại diện chuyên nghiệp giúp độc giả tin tưởng bài viết của bạn hơn
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card-content">
+                    <div class="card-inner-title">Hồ sơ tác giả</div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">147</div>
+                            <div class="stat-label">Bài viết</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number blue">2.4M</div>
+                            <div class="stat-label">Lượt xem</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number green">12.5K</div>
+                            <div class="stat-label">Người theo dõi</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number orange">4.8</div>
+                            <div class="stat-label">Đánh giá</div>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/profile/author/update}" method="POST" id="authorInfoForm">
+                        <div class="form-grid-layout">
+                            
+                            <div class="input-box-group span-full">
+                                <label>Chuyên mục phụ trách</label>
+                                <div class="checkbox-container-list">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="categories" value="tech" checked> Công nghệ
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="categories" value="startup" checked> Khởi nghiệp
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="categories" value="ai" checked> AI & Machine Learning
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="categories" value="software"> Phần mềm
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="categories" value="hardware"> Hardware
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="input-box-group span-full">
+                                <label>Chuyên môn / Lĩnh vực</label>
+                                <div class="tags-wrapper-box">
+                                    <div class="tag-badge">Công nghệ <i class="fa-solid fa-xmark"></i></div>
+                                    <div class="tag-badge">Blockchain <i class="fa-solid fa-xmark"></i></div>
+                                    <div class="tag-badge">AI <i class="fa-solid fa-xmark"></i></div>
+                                    <div class="tag-badge">Cybersecurity <i class="fa-solid fa-xmark"></i></div>
+                                    <div class="tag-badge">Cloud Computing <i class="fa-solid fa-xmark"></i></div>
+                                    <input type="text" placeholder="Thêm chuyên môn (nhấn Enter)">
+                                </div>
+                            </div>
+
+                            <div class="input-box-group span-full">
+                                <label>Kinh nghiệm làm báo</label>
+                                <input type="text" name="experienceYears" value="10 năm">
+                            </div>
+
+                            <div class="input-box-group span-full">
+                                <label>Tổ chức / Tòa soạn</label>
+                                <input type="text" name="organization" value="VnExpress">
+                            </div>
+
+                            <div class="input-box-group span-full">
+                                <label>Giải thưởng & Thành tựu</label>
+                                <textarea name="awards" rows="3" placeholder="Nhập các giải thưởng của bạn...">- Giải Bạc Giải báo chí quốc gia 2022&#10;- Top 10 nhà báo công nghệ xuất sắc 2023</textarea>
+                            </div>
+
+                            <div class="input-box-group span-full" style="display: flex; flex-direction: column;">
+                                <label>Học vấn</label>
+                                <div class="education-list-box">
+                                    <div class="education-item-card">
+                                        <div class="edu-info-left">
+                                            <h4>Cử nhân Báo chí</h4>
+                                            <p>Đại học Khoa học Xã hội và Nhân văn</p>
+                                            <span>2010 - 2014</span>
+                                        </div>
+                                        <button type="button" class="btn-delete-edu" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-add-more-edu"><i class="fa-solid fa-plus"></i> Thêm bằng cấp</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <h2>📰 NewsApp</h2>
+            <p style="margin: 15px 0; opacity: 0.7;">Hệ thống cập nhật tin tức công nghệ và đời sống 24/7.</p>
+            <div style="font-size: 13px; opacity: 0.4; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                © 2026 NewsApp Project. Spring Boot & Thymeleaf.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Điều khiển ẩn/hiện dropdown tài khoản góc phải navbar
+        const userToggle = document.getElementById('userToggle');
+        const userDropdown = document.getElementById('userDropdown');
+        if (userToggle) {
+            userToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+        }
+        document.addEventListener('click', function() {
+            if (userDropdown) userDropdown.classList.remove('show');
+        });
+    </script>
+</body>
+</html>

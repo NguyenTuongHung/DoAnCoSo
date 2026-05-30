@@ -1,0 +1,189 @@
+/* =========================
+   RESET
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f5f7fb;
+}
+
+/* =========================
+   REGISTER PAGE
+========================= */
+.register-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* =========================
+   LEFT SIDE
+========================= */
+.register-left {
+  position: relative;
+  background: url("https://picsum.photos/1000/1200?random=40") center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  color: white;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.72);
+}
+
+.left-content {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+}
+
+.left-content h1 {
+  font-size: 42px;
+  margin-bottom: 20px;
+}
+
+.left-content h2 {
+  font-size: 34px;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+
+.left-content p {
+  line-height: 1.8;
+  font-size: 17px;
+  margin-bottom: 30px;
+  color: #e5e7eb;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 16px;
+}
+
+/* =========================
+   RIGHT SIDE
+========================= */
+.register-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  background: #ffffff;
+}
+
+.register-box {
+  width: 100%;
+  max-width: 500px;
+}
+
+.register-box h2 {
+  font-size: 34px;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.register-box > p {
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+/* =========================
+   FORM
+========================= */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.form-group input,
+.form-group select {
+  padding: 15px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+  background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #2563eb;
+}
+
+/* =========================
+   OPTIONS
+========================= */
+.form-options {
+  font-size: 14px;
+}
+
+.agree {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #374151;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.register-btn {
+  width: 100%;
+  border: none;
+  padding: 15px;
+  background: #16a34a;
+  color: white;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.register-btn:hover {
+  background: #15803d;
+}
+
+/* =========================
+   LOGIN LINK
+========================= */
+.login-link {
+  text-align: center;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.login-link a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}

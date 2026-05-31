@@ -2,10 +2,10 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Hồ sơ cá nhân - NewsApp</title>
+    <title>Tin đã xem - NewsApp</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #007bff; --bg: #f4f7f6; --text: #333; --border: #ddd; }
+       :root { --primary: #007bff; --bg: #f4f7f6; --text: #333; --border: #ddd; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         .wrapper { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; gap: 30px; }
         
@@ -49,74 +49,34 @@
             </div>
         </div>
         <nav class="menu-list">
-            <nav class="menu-list">
-            <a href="/profile" class="active"><i class="fa-solid fa-user-gear"></i> Thông tin chung</a>
+            <a href="/profile"><i class="fa-solid fa-user-gear"></i> Thông tin chung</a>
             <a href="/profile/comments"><i class="fa-solid fa-comment-dots"></i> Ý kiến của bạn</a>
             <a href="/saved-news"><i class="fa-solid fa-bookmark"></i> Tin đã lưu</a>
-            <a href="/history"><i class="fa-regular fa-clock"></i> Tin đã xem</a>
+            <a href="/history" class="active"><i class="fa-regular fa-clock"></i> Tin đã xem</a>
             <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</a>
-        </nav>
         </nav>
     </aside>
 
     <main>
-        <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Quay lại Trang chủ</a>
+        <a href="/" style="display:inline-block; margin-bottom: 20px; color: var(--primary); text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Quay lại Trang chủ</a>
         
-        <form th:action="@{/admin/profile/update}" th:object="${user}" method="POST">
-            <div class="card">
-                <h2 class="section-title">Thông tin tài khoản</h2>
-                <div class="field">
-    <span class="field-label">Email</span>
-    <span class="field-value">
-        <input type="email" 
-               th:field="*{email}" 
-               placeholder="example@gmail.com" 
-               required>
-    </span>
-</div>
-            </div>
-
-            <div class="card">
-                <h2 class="section-title">Thông tin cá nhân</h2>
-                <div class="field">
-                    <span class="field-label">Ngày sinh</span>
-                    <span class="field-value"><input type="date" th:field="*{birthDate}"></span>
-                </div>
-                <div class="field">
-                    <span class="field-label">Giới tính</span>
-                    <span class="field-value">
-                        <select th:field="*{gender}">
-                            <option value="">-- Chọn giới tính --</option>
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                            <option value="Khác">Khác</option>
-                        </select>
-                    </span>
+        <div class="card">
+            <h2 class="section-title">Tin đã xem</h2>
+            
+            <div th:if="${not #lists.isEmpty(historyList)}">
+                <div class="news-item" th:each="h : ${historyList}">
+                    <div class="news-info">
+                        <h4><a th:href="@{'/tin-tuc/' + ${h.post.id}}" th:text="${h.post.title}">Tiêu đề bài viết</a></h4>
+                        <small style="color: #888;" th:text="'Đã xem lúc: ' + ${#temporals.format(h.viewedAt, 'HH:mm - dd/MM/yyyy')}">Thời gian</small>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2 class="section-title">Công việc và học vấn</h2>
-                <div class="field">
-                    <span class="field-label">Bằng cấp</span>
-                    <span class="field-value">
-                        <select th:field="*{education}">
-                            <option value="">-- Chọn bằng cấp --</option>
-                            <option value="Trung học phổ thông">Trung học phổ thông</option>
-                            <option value="Cao đẳng">Cao đẳng</option>
-                            <option value="Đại học">Đại học</option>
-                            <option value="Thạc sĩ">Thạc sĩ</option>
-                        </select>
-                    </span>
-                </div>
-                <div class="field">
-                    <span class="field-label">Địa chỉ</span>
-                    <span class="field-value"><input type="text" th:field="*{location}" placeholder="Số nhà, đường, quận/huyện..."></span>
-                </div>
+            <div th:if="${#lists.isEmpty(historyList)}" class="no-data">
+                <i class="fa-regular fa-clock" style="font-size: 40px; color: #dee2e6; margin-bottom: 10px;"></i>
+                <p>Bạn chưa xem bài viết nào gần đây.</p>
             </div>
-
-            <button type="submit" class="btn-save">Lưu thay đổi</button>
-        </form>
+        </div>
     </main>
 </div>
 

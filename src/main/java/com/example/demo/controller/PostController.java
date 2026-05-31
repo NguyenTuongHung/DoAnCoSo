@@ -1,13 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Post;
+import com.example.demo.model.SavedNews;
 import com.example.demo.model.User;
 import com.example.demo.model.Category;
 import com.example.demo.repository.PostRepository;
+import com.example.demo.repository.SavedNewsRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.CommentRepository;
+import com.example.demo.repository.HistoryRepository;
 import com.example.demo.model.Comment;
+import com.example.demo.model.History;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,7 +41,11 @@ public class PostController {
     @Autowired
     private CommentRepository commentRepository;
 
-    
+    @Autowired
+private SavedNewsRepository savedNewsRepository;
+
+@Autowired
+private HistoryRepository historyRepository;
 
     // ================= TRANG CHỦ =================
 
@@ -331,48 +340,36 @@ public String handleRegister(@ModelAttribute User user, Model model) {
         return "HoSoQuanTriVien/admin-settings"; // Đã sửa đường dẫn
     }
 
-    // ================= PROFILE =================
-  @GetMapping("/admin/ho-so")
+   // ================= HỒ SƠ ADMIN =================
+@GetMapping("/admin/ho-so")
 public String showAdminProfile(Model model, HttpSession session) {
-    // Thêm dòng này để in ra màn hình console (Terminal)
-    System.out.println("DEBUG: Session userId là: " + session.getAttribute("userId"));
-
     Long userId = (Long) session.getAttribute("userId");
-    
-    // Nếu kết quả in ra là NULL, lỗi nằm ở hàm Login của bạn!
-    if (userId == null) {
-        return "redirect:/login";
-    }
+    if (userId == null) return "redirect:/login";
 
     User user = userRepository.findById(userId).orElse(null);
-    if (user == null) {
-        session.invalidate();
-        return "redirect:/login";
-    }
-    
     model.addAttribute("user", user);
-    return "HoSoQuanTriVien/admin-users"; 
+
+    // TRỎ VÀO FILE HỒ SƠ CHỨ KHÔNG PHẢI FILE DANH SÁCH NGƯỜI DÙNG
+    return "HoSoQuanTriVien/HoSoAdmin"; 
 }
 
-   @PostMapping("/admin/profile/update")
-public String updateProfile(@RequestParam String username, 
-                            @RequestParam String email, 
-                            @RequestParam String phone, 
-                            @RequestParam String location, 
-                            HttpSession session) {
-
+@PostMapping("/admin/profile/update")
+public String updateProfile(@ModelAttribute("user") User userForm, HttpSession session) {
     Long userId = (Long) session.getAttribute("userId");
+    if (userId == null) return "redirect:/login";
+
     User existingUser = userRepository.findById(userId).orElse(null);
-
     if (existingUser != null) {
-        existingUser.setUsername(username);
-        existingUser.setEmail(email);
-        existingUser.setPhone(phone);
-        existingUser.setLocation(location);
-        userRepository.save(existingUser);
+        existingUser.setFullName(userForm.getFullName());
+        existingUser.setEmail(userForm.getEmail());
+        existingUser.setPhone(userForm.getPhone());
+        existingUser.setLocation(userForm.getLocation());
+        existingUser.setBirthDate(userForm.getBirthDate());
+        existingUser.setGender(userForm.getGender());
+        existingUser.setEducation(userForm.getEducation());
 
-        // --- BƯỚC NÀY LÀM TÊN CẬP NHẬT NGAY LẬP TỨC ---
-        session.setAttribute("username", username); 
+        userRepository.save(existingUser);
+        session.setAttribute("username", existingUser.getUsername());
     }
     return "redirect:/admin/ho-so?success=true";
 }
@@ -396,20 +393,64 @@ public String updateProfile(@RequestParam String username,
 
 
     
-   @GetMapping("/profile")
+
+// 1. Hồ sơ của bạn
+@GetMapping("/profile")
 public String showUserProfile(Model model, HttpSession session) {
     Object userIdObj = session.getAttribute("userId");
     if (userIdObj == null) return "redirect:/login";
 
     Long userId = Long.valueOf(userIdObj.toString());
     User user = userRepository.findById(userId).orElse(null);
-    
-    // Nếu user trong DB bị xóa hoặc null, đẩy về login
     if (user == null) return "redirect:/login";
 
     model.addAttribute("user", user);
-    // Trả về đúng đường dẫn thư mục
-    return "HoSoNguoiDung/profile"; 
+    return "HoSoNguoiDung/profile";
+}
+
+// 2. Ý kiến của bạn
+@GetMapping("/profile/comments")
+public String showUserComments(Model model, HttpSession session) {
+    String username = (String) session.getAttribute("username");
+    if (username == null) return "redirect:/login";
+
+    List<Comment> myComments = commentRepository.findByUsername(username);
+    model.addAttribute("comments", myComments);
+    
+    // Đảm bảo có thông tin user để hiển thị Sidebar
+    model.addAttribute("user", userRepository.findByUsername(username));
+    
+    return "HoSoNguoiDung/user-comments";
+}
+
+// Lấy danh sách tin đã lưu
+@GetMapping("/saved-news")
+public String showSavedNews(Model model, HttpSession session) {
+    String username = (String) session.getAttribute("username");
+    if (username == null) return "redirect:/login";
+
+    // 1. Tìm đối tượng User từ username
+    User user = userRepository.findByUsername(username);
+    
+    // 2. Tìm danh sách tin đã lưu bằng đối tượng User này
+    List<SavedNews> savedList = savedNewsRepository.findByUser(user);
+    
+    model.addAttribute("savedNews", savedList);
+    model.addAttribute("user", user);
+    return "HoSoNguoiDung/saved-news";
+}
+
+// Lấy danh sách tin đã xem
+@GetMapping("/history")
+public String showHistory(Model model, HttpSession session) {
+    String username = (String) session.getAttribute("username");
+    if (username == null) return "redirect:/login";
+
+    List<History> historyList = historyRepository.findByUsername(username);
+    
+    model.addAttribute("history", historyList);
+    model.addAttribute("user", userRepository.findByUsername(username));
+    return "HoSoNguoiDung/history";
 }
 
 }

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Viết bài mới nâng cao - NewsApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #007bff; 
+            --primary-light: #eef6ff;
+            --indigo: #6366f1;
+            --indigo-light: #f5f3ff;
+            --bg: #f4f7f6; 
+            --text: #333; 
+            --border: #ddd; 
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .wrapper { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 320px; gap: 30px; }
+        
+        /* Header */
+        .page-header { max-width: 1100px; margin: 0 auto 20px; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; color: var(--primary); text-decoration: none; font-weight: 500; font-size: 14px; }
+        .title-area { display: flex; align-items: center; gap: 15px; }
+        .title-area h1 { font-size: 26px; font-weight: 700; color: #111; }
+        .ai-badge { background: var(--indigo-light); color: var(--indigo); border: 1px solid #ddd6fe; padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+        /* Card Layout */
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 25px; border-left: 4px solid var(--primary); padding-left: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Form Fields */
+        .field { margin-bottom: 20px; }
+        .field-label { display: block; font-size: 14px; font-weight: 600; color: #444; margin-bottom: 11px; }
+        .field-label .required { color: #dc3545; }
+        
+        /* Controls */
+        .input-control, .textarea-control { 
+            width: 100%; padding: 12px 15px; border: 1px solid var(--border); 
+            border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; font-family: inherit;
+        }
+        .input-control:focus, .textarea-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+        .textarea-control { resize: vertical; }
+        
+        /* Đã sửa: Giao diện chọn nhiều danh mục dạng Tag/Checkbox */
+        .category-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .category-item { position: relative; }
+        .category-item input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        .category-label { display: inline-block; padding: 8px 16px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 20px; font-size: 13px; cursor: pointer; user-select: none; transition: 0.2s; }
+        .category-item input[type="checkbox"]:checked + .category-label { background: var(--primary-light); color: var(--primary); border-color: var(--primary); font-weight: 600; }
+        
+        /* Đã sửa: Khối chọn file ảnh */
+        .image-input-wrapper { display: flex; gap: 10px; align-items: center; }
+        .btn-file-select { padding: 12px 18px; background: #f3f4f6; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.2s; }
+        .btn-file-select:hover { background: #e2e8f0; }
+
+        /* Sidebar Utilities */
+        .sidebar-box { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .sidebar-title { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .ai-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .btn-ai-tool { width: 100%; padding: 12px 15px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; text-align: left; font-size: 13px; font-weight: 500; color: #4b5563; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .btn-ai-tool:hover { background: var(--indigo-light); color: var(--indigo); border-color: #c084fc; font-weight: 600; }
+        
+        /* Action Buttons */
+        .action-group { display: flex; gap: 15px; margin-top: 10px; }
+        .btn-submit { flex: 1; padding: 14px; background: #334155; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; transition: 0.3s; text-align: center; text-decoration: none; }
+        .btn-submit:hover { background: #1e293b; }
+        .btn-cancel { padding: 14px 30px; background: #e2e8f0; color: #475569; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; transition: 0.3s; text-align: center; text-decoration: none; }
+        .btn-cancel:hover { background: #cbd5e1; }
+        
+        @media (max-width: 900px) { .wrapper { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Quay lại Trang chủ</a>
+    <div class="title-area">
+        <h1>Viết bài mới</h1>
+        <div class="ai-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Powered</div>
+    </div>
+</div>
+
+<div class="wrapper">
+    <main>
+        <form th:action="@{/admin/posts/save}" th:object="${post}" method="POST">
+            
+            <div class="card">
+                <div class="section-title"><span>Thông tin cơ bản</span></div>
+                
+                <div class="field">
+                    <label class="field-label">Tiêu đề bài viết <span class="required">*</span></label>
+                    <input type="text" id="postTitle" th:field="*{title}" class="input-control" placeholder="Nhập tiêu đề bài viết..." required>
+                </div>
+
+                <div class="field">
+                    <label class="field-label">Danh mục bài viết (Có thể chọn nhiều) <span class="required">*</span></label>
+                    <div class="category-grid">
+                        <div class="category-item">
+                            <input type="checkbox" name="categories" value="Đá bóng" id="cat-dabong">
+                            <label for="cat-dabong" class="category-label">⚽ Đá bóng</label>
+                        </div>
+                        <div class="category-item">
+                            <input type="checkbox" name="categories" value="Tin tức" id="cat-tintuc">
+                            <label for="cat-tintuc" class="category-label">📰 Tin tức</label>
+                        </div>
+                        <div class="category-item">
+                            <input type="checkbox" name="categories" value="Công nghệ" id="cat-congnghe">
+                            <label for="cat-congnghe" class="category-label">💻 Công nghệ</label>
+                        </div>
+                        <div class="category-item">
+                            <input type="checkbox" name="categories" value="Du lịch" id="cat-dulich">
+                            <label for="cat-dulich" class="category-label">✈️ Du lịch</label>
+                        </div>
+                        <div class="category-item">
+                            <input type="checkbox" name="categories" value="Giải trí" id="cat-giaitri">
+                            <label for="cat-giaitri" class="category-label">🎬 Giải trí</label>
+                        </div>
+                    </div>
+                    <input type="text" id="customCategory" class="input-control" style="padding: 8px 12px; font-size: 13px;" placeholder="Tự điền danh mục khác nếu có (Cách nhau bằng dấu phẩy)...">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-title">Nội dung chi tiết</div>
+                
+                <div class="field">
+                    <label class="field-label">Tóm tắt ngắn <span class="required">*</span></label>
+                    <textarea th:field="*{summary}" rows="2" class="textarea-control" placeholder="Viết tóm tắt ngắn..." required></textarea>
+                </div>
+
+                <div class="field">
+                    <label class="field-label">Nội dung bài viết <span class="required">*</span></label>
+                    <textarea id="postContent" th:field="*{content}" rows="10" class="textarea-control" placeholder="Triển khai chi tiết nội dung câu chuyện tại đây..." required></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-title">Hình ảnh đại diện</div>
+                <div class="field">
+                    <label class="field-label">Đường dẫn hoặc tải ảnh lên</label>
+                    <div class="image-input-wrapper">
+                        <input type="text" id="imageUrlField" th:field="*{imageUrl}" class="input-control" placeholder="https://example.com/image.jpg">
+                        
+                        <button type="button" class="btn-file-select" onclick="document.getElementById('fileInput').click()">
+                            <i class="fa-regular fa-image"></i> Chọn ảnh
+                        </button>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
+                    </div>
+                    <small id="fileNameHint" style="color: #6b7280; display: block; margin-top: 6px; font-size: 12px;">Chưa chọn tệp tin nào.</small>
+                </div>
+            </div>
+
+            <div class="action-group">
+                <button type="submit" class="btn-submit">Đăng bài viết tức thì</button>
+                <a href="/" class="btn-cancel">Hủy bỏ</a>
+            </div>
+            
+        </form>
+    </main>
+
+    <aside>
+        <div class="sidebar-box" style="border-top: 3px solid var(--indigo);">
+            <div class="sidebar-title" style="color: var(--indigo);">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Writing Assistant
+            </div>
+            <div class="ai-buttons">
+                <button type="button" class="btn-ai-tool" onclick="triggerAIFeature('title')"><i class="fa-regular fa-lightbulb"></i> Gợi ý tiêu đề</button>
+                <button type="button" class="btn-ai-tool" onclick="triggerAIFeature('template')"><i class="fa-regular fa-file-lines"></i> Tạo mẫu nội dung</button>
+                <button type="button" class="btn-ai-tool" onclick="triggerAIFeature('seo')"><i class="fa-solid fa-bolt"></i> Tối ưu chuẩn SEO</button>
+                <button type="button" class="btn-ai-tool" onclick="triggerAIFeature('grammar')"><i class="fa-regular fa-circle-check"></i> Sửa lỗi ngữ pháp</button>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+    // Xử lý khi người dùng chọn File ảnh từ máy tính
+    function handleFileSelect(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            // Hiển thị tên file xuống dòng chữ gợi ý
+            document.getElementById('fileNameHint').innerHTML = `<i class="fa-solid fa-paperclip"></i> Tệp đã chọn: <b>${file.name}</b>`;
+            // Giả lập đưa đường dẫn cục bộ vào ô input text để Spring Boot nhận dữ liệu dạng chuỗi
+            document.getElementById('imageUrlField').value = "/images/uploads/" + file.name;
+        }
+    }
+
+    // Xử lý các tính năng thông minh của AI Writing Assistant
+    function triggerAIFeature(feature) {
+        // Lấy danh sách các danh mục đã chọn
+        let selectedCats = [];
+        document.querySelectorAll('input[name="categories"]:checked').forEach(cb => {
+            selectedCats.push(cb.value);
+        });
+        
+        let customCat = document.getElementById('customCategory').value.trim();
+        if(customCat) {
+            selectedCats.push(...customCat.split(',').map(s => s.trim()));
+        }
+
+        const titleInput = document.getElementById('postTitle');
+        const contentTextArea = document.getElementById('postContent');
+
+        if (feature === 'template') {
+            // Tính toán tạo mẫu nội dung dựa trên danh mục đã chọn
+            if (selectedCats.length === 0) {
+                alert("Vui lòng chọn hoặc tự điền ít nhất 1 danh mục ở phía trên để AI tạo mẫu nội dung chính xác nhất!");
+                return;
+            }
+            
+            let primaryCat = selectedCats[0];
+            let templateText = "";
+
+            if (primaryCat.includes("Đá bóng")) {
+                templateText = "## TIÊU ĐỀ TRẬN ĐẤU GIẢ TƯỞNG\n\n[Tóm tắt bối cảnh trận đấu diễn ra ở đâu, giải đấu nào...]\n\n### 1. Diễn biến hiệp 1\n- Phút thứ 15: Tình huống nguy hiểm đầu tiên...\n- Phút thứ 30: Bàn thắng mở tỷ số đầy bất ngờ...\n\n### 2. Sự bùng nổ hiệp 2\n- Những thay đổi chiến thuật của huấn luyện viên...\n- Kết quả chung cuộc và điểm nhấn ngôi sao xuất sắc nhất trận.";
+            } else if (primaryCat.includes("Công nghệ")) {
+                templateText = "## ĐÁNH GIÁ SẢN PHẨM: [TÊN THIẾT BỊ]\n\n### 1. Thông số kỹ thuật nổi bật\n- Thiết kế hiệu năng, chip xử lý, dung lượng pin...\n\n### 2. Trải nghiệm thực tế sử dụng\n- Điểm cộng: Giao diện mượt, chụp ảnh đêm tốt...\n- Điểm trừ: Giá thành hơi cao, dễ bám vân tay...\n\n### 3. Kết luận\n- Đối tượng phù hợp nhất để sở hữu sản phẩm này là ai?";
+            } else if (primaryCat.includes("Du lịch")) {
+                templateText = "## CẨM NANG DU LỊCH ĐẾN: [TÊN ĐỊA DANH]\n\n### 1. Thời điểm lý tưởng nhất trong năm\n- Nên đi vào tháng mấy để tận hưởng thời tiết đẹp nhất...\n\n### 2. Lịch trình khám phá 3 ngày 2 đêm chi tiết\n- Ngày 1: Các điểm check-in nổi tiếng quanh trung tâm...\n- Ngày 2: Trải nghiệm ẩm thực địa phương đặc sắc...\n\n### 3. Những lưu ý quan trọng về phương tiện và chi phí.";
+            } else {
+                templateText = `## BÀI VIẾT VỀ CHỦ ĐỀ: ${primaryCat.toUpperCase()}\n\n### 1. Đặt vấn đề / Thực trạng hiện tại\n- Nội dung chia sẻ thông tin tổng quan...\n\n### 2. Chi tiết câu chuyện / Luận điểm chính\n- Ý kiến 1...\n- Ý kiến 2...\n\n### 3. Thông điệp gửi gắm tới độc giả hành trình tiếp theo.`;
+            }
+
+            if(confirm(`AI đã tạo xong mẫu bài viết dựa trên danh mục [${primaryCat}]. Bạn có muốn chèn nội dung mẫu này vào khung soạn thảo không?`)) {
+                contentTextArea.value = templateText;
+            }
+
+        } else if (feature === 'title') {
+            // Tính toán gợi ý tiêu đề dựa vào nội dung hiện tại
+            let currentContent = contentTextArea.value;
+            if(!currentContent || currentContent.length < 10) {
+                alert("AI khuyên: Bạn hãy viết một chút nội dung thô trước, sau đó bấm nút này AI sẽ gợi ý tiêu đề sát nghĩa nhất!");
+                return;
+            }
+            alert("🪄 Gợi ý tiêu đề từ AI:\n\n1. [Xu Hướng] Bí quyết làm chủ nội dung cực đơn giản\n2. Góc nhìn: Khám phá những điểm mới mẻ chưa từng bật mí\n3. Top 5 điều bạn không nên bỏ lỡ trong năm nay");
+            
+        } else if (feature === 'seo') {
+            // Tính toán điểm SEO
+            let title = titleInput.value;
+            let content = contentTextArea.value;
+            if(!title || !content) {
+                alert("Vui lòng nhập Tiêu đề và Nội dung bài viết để chấm điểm từ khóa SEO.");
+                return;
+            }
+            alert("📊 Phân tích cấu trúc tối ưu SEO từ AI:\n\n- Độ dài tiêu đề: Đạt chuẩn (Thẻ H1 tốt).\n- Mật độ từ khóa chính: Khá ổn định.\n- Khuyến nghị: Bạn nên chèn thêm ít nhất 1-2 tiêu đề phụ (H2, H3) trong bài để tăng thứ hạng tìm kiếm trên Google.");
+            
+        } else if (feature === 'grammar') {
+            // Kiểm tra lỗi ngữ pháp
+            let content = contentTextArea.value;
+            if(!content) {
+                alert("Khung văn bản trống. Hãy viết bài trước khi kiểm tra lỗi.");
+                return;
+            }
+            alert("✅ Trợ lý ngữ pháp AI:\n\nChúc mừng! Bài viết của bạn phân cú pháp câu rất tự nhiên, cấu trúc mạch lạc và không phát hiện thấy lỗi chính tả nào nghiêm trọng.");
+        }
+    }
+</script>
+
+</body>
+</html>

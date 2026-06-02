@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${post.title} + ' - NewsApp'">Chi tiết bài viết</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #f8fafc; color: #333; line-height: 1.6; }
+    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .post-content { background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; }
+    
+    /* Style bình luận */
+    .comment-section { margin-top: 50px; padding-top: 30px; border-top: 2px solid #f1f5f9; }
+    .comment-item { background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid #0ea5e9; }
+    textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px; }
+    .btn-submit { background: #0ea5e9; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <header style="background: #ffffff; padding: 15px 0; border-bottom: 3px solid #0ea5e9; margin-bottom: 40px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+    <div class="wrapper" style="display: flex; align-items: center; justify-content: space-between;">
+        
+        <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 26px;">📰</span>
+            <h2 style="color: #0ea5e9; font-weight: 800; font-size: 24px; letter-spacing: -0.5px; margin: 0; font-family: sans-serif;">
+                NewsApp
+            </h2>
+        </div>
+
+        <nav>
+            <a href="/" style="text-decoration: none; color: #b91c1c; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: 0.3s; padding: 8px 16px; border-radius: 8px; border: 1px solid #b91c1c; background: #fff5f5;">
+                ← Quay về trang chủ
+            </a>
+        </nav>
+    </div>
+</header>
+
+  <main class="wrapper" style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;">
+    <div class="post-content">
+      <img th:src="${post.imageUrl}" style="width: 100%; height: 400px; object-fit: cover; border-radius: 12px;">
+      <h1 th:text="${post.title}" style="margin: 20px 0;"></h1>
+      <article th:utext="${post.content}"></article>
+
+      <section class="comment-section">
+        <h3>Bình luận</h3>
+        
+        <form th:action="@{/tin-tuc/comment/save}" method="post" style="margin-bottom: 30px;">
+            <input type="hidden" name="postId" th:value="${post.id}">
+            <textarea name="content" placeholder="Viết bình luận của bạn..." required></textarea>
+            <button type="submit" class="btn-submit">Gửi bình luận</button>
+        </form>
+
+        <div th:each="cmt : ${post.comments}" class="comment-item">
+            <strong th:text="${cmt.username}"></strong> 
+            <small style="color: #888;" th:text="'(' + ${cmt.getFormattedDate()} + ')'"></small>
+            <p th:text="${cmt.content}"></p>
+        </div>
+        <p th:if="${#lists.isEmpty(post.comments)}" style="color: #999;">Chưa có bình luận nào.</p>
+      </section>
+    </div>
+
+    <aside style="width: 100%;">
+    <div style="background: #ffffff; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <h3 style="margin-bottom: 20px; font-size: 18px; border-left: 4px solid #b91c1c; padding-left: 12px; color: #1e293b;">
+            Tin hot trong tuần
+        </h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <a href="/tin-tuc/1" style="text-decoration: none; display: flex; gap: 15px; align-items: center;">
+                <span style="font-size: 24px; font-weight: 900; color: #cbd5e1;">01</span>
+                <p style="color: #334155; font-weight: 600; font-size: 14px; line-height: 1.4;">Giá vàng tăng mạnh sáng nay</p>
+            </a>
+            <a href="/tin-tuc/2" style="text-decoration: none; display: flex; gap: 15px; align-items: center;">
+                <span style="font-size: 24px; font-weight: 900; color: #cbd5e1;">02</span>
+                <p style="color: #334155; font-weight: 600; font-size: 14px; line-height: 1.4;">Thị trường ô tô điện bùng nổ</p>
+            </a>
+            <a href="/tin-tuc/3" style="text-decoration: none; display: flex; gap: 15px; align-items: center;">
+                <span style="font-size: 24px; font-weight: 900; color: #cbd5e1;">03</span>
+                <p style="color: #334155; font-weight: 600; font-size: 14px; line-height: 1.4;">Xu hướng làm việc từ xa 2026</p>
+            </a>
+        </div>
+    </div>
+</aside>
+  </main>
+</body>
+</html>

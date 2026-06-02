@@ -1,0 +1,10 @@
+<div class="admin-profile-container">
+    <a th:href="@{/admin/ho-so}" class="admin-profile-link">
+        <div class="admin-info">
+            <span class="name" th:text="${session.username}">Quản trị viên</span>
+            <span class="role">ADMINISTRATOR</span>
+        </div>
+        <img th:src="'https://ui-avatars.com/api/?name=' + ${session.username} + '&background=0ea5e9&color=fff'" 
+             alt="Admin" class="admin-avatar">
+    </a>
+</div>

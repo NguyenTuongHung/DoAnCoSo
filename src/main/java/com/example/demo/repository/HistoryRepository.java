@@ -7,6 +7,8 @@ import java.util.List;
 
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
-    // Tìm lịch sử theo username
-    List<History> findByUsername(String username);
+    
+    // Thêm hàm này vào để Controller có thể sử dụng
+    List<History> findByUsernameOrderByViewedAtDesc(String username);
+    
 }

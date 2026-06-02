@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,20 +70,24 @@ private HistoryRepository historyRepository;
 
     // ================= CHI TIẾT BÀI VIẾT =================
 
-    @GetMapping("/tin-tuc/{id}")
-    public String getPostDetail(@PathVariable Long id, Model model) {
+   @GetMapping("/tin-tuc/{id}")
+public String getPostDetail(@PathVariable Long id, Model model, HttpSession session) {
+    Post post = postRepository.findById(id).orElse(null);
+    if (post == null) return "redirect:/";
 
-        Post post = postRepository.findById(id).orElse(null);
-
-        if (post == null) {
-            return "redirect:/";
-        }
-
-        model.addAttribute("post", post);
-        model.addAttribute("posts", postRepository.findAll());
-
-        return "HoSoQuanTriVien/post-detail";
+    // GHI NHẬN LỊCH SỬ XEM
+    String username = (String) session.getAttribute("username");
+    if (username != null) {
+        History history = new History();
+        history.setUsername(username);
+        history.setPost(post);
+        history.setViewedAt(LocalDateTime.now());
+        historyRepository.save(history); // Phải có lệnh save này!
     }
+
+    model.addAttribute("post", post);
+    return "HoSoQuanTriVien/post-detail";
+}
 
     // ================= LOGIN =================
 
@@ -446,10 +451,13 @@ public String showHistory(Model model, HttpSession session) {
     String username = (String) session.getAttribute("username");
     if (username == null) return "redirect:/login";
 
-    List<History> historyList = historyRepository.findByUsername(username);
+    // Gọi hàm từ Repository
+    List<History> historyList = historyRepository.findByUsernameOrderByViewedAtDesc(username);
     
-    model.addAttribute("history", historyList);
+    // Tên biến 'historyList' ở đây phải khớp với 'historyList' trong file HTML
+    model.addAttribute("historyList", historyList); 
     model.addAttribute("user", userRepository.findByUsername(username));
+    
     return "HoSoNguoiDung/history";
 }
 

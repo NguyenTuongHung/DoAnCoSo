@@ -2,7 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import java.util.List; // Nhớ import thư viện này
-
+import java.time.LocalDateTime;
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -10,6 +10,8 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Column(length = 500)
     private String title;
@@ -76,4 +78,7 @@ public class Post {
     // Getter & Setter cho comments
     public List<Comment> getComments() { return comments; }
     public void setComments(List<Comment> comments) { this.comments = comments; }
+
+    public LocalDateTime getCreatedDate() { return createdDate; }
+public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }
 }

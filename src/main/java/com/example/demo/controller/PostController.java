@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 @Controller
 public class PostController {
@@ -47,6 +48,8 @@ private SavedNewsRepository savedNewsRepository;
 
 @Autowired
 private HistoryRepository historyRepository;
+
+
 
     // ================= TRANG CHỦ =================
 
@@ -75,16 +78,32 @@ public String getPostDetail(@PathVariable Long id, Model model, HttpSession sess
     Post post = postRepository.findById(id).orElse(null);
     if (post == null) return "redirect:/";
 
-    // GHI NHẬN LỊCH SỬ XEM
+    // 1. Lấy danh sách tin hot (3 bài mới nhất hoặc hot nhất)
+    // Lưu ý: Đảm bảo bạn đã định nghĩa hàm này trong PostRepository
+    List<Post> hotPosts = postRepository.findTop3ByOrderByCreatedDateDesc();
+    model.addAttribute("hotPosts", hotPosts);
+
+    // 2. Xử lý lưu lịch sử và trạng thái đã lưu
     String username = (String) session.getAttribute("username");
+    boolean isSaved = false;
+
     if (username != null) {
+        User user = userRepository.findByUsername(username);
+        
+        // Ghi nhận lịch sử xem
         History history = new History();
         history.setUsername(username);
         history.setPost(post);
-        history.setViewedAt(LocalDateTime.now());
-        historyRepository.save(history); // Phải có lệnh save này!
-    }
+        history.setViewedAt(java.time.LocalDateTime.now());
+        historyRepository.save(history);
 
+        // Kiểm tra xem user đã lưu bài này chưa
+        if (user != null) {
+           isSaved = savedNewsRepository.existsByUserAndPost_Id(user, id);
+        }
+    }
+    
+    model.addAttribute("isSaved", isSaved);
     model.addAttribute("post", post);
     return "HoSoQuanTriVien/post-detail";
 }
@@ -460,5 +479,29 @@ public String showHistory(Model model, HttpSession session) {
     
     return "HoSoNguoiDung/history";
 }
+
+// ================= LƯU BÀI VIẾT =================
+    @PostMapping("/tin-tuc/save-news")
+    public String saveNews(@RequestParam Long postId, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) return "redirect:/login";
+
+        User user = userRepository.findByUsername(username);
+        Post post = postRepository.findById(postId).orElse(null);
+
+        if (user != null && post != null) {
+            // Kiểm tra tránh lưu trùng
+            // Thay vì existsByUserAndPostId, hãy dùng:
+boolean exists = savedNewsRepository.existsByUserAndPost_Id(user, postId);
+            if (!exists) {
+                SavedNews savedNews = new SavedNews();
+                savedNews.setUser(user);
+                savedNews.setPost(post);
+                savedNewsRepository.save(savedNews);
+            }
+        }
+        return "redirect:/tin-tuc/" + postId;
+    }
+
 
 }

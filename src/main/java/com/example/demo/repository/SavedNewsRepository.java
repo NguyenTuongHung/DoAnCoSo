@@ -14,4 +14,6 @@ public interface SavedNewsRepository extends JpaRepository<SavedNews, Long> {
     
     // Hoặc nếu bạn muốn tìm theo username (String):
     List<SavedNews> findByUser_Username(String username);
+
+    boolean existsByUserAndPost_Id(User user, Long postId);
 }

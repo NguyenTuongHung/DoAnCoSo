@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ý kiến của bạn - NewsApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #007bff; --bg: #f4f7f6; --text: #333; --border: #ddd; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .wrapper { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; gap: 30px; }
+        
+        .sidebar { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: fit-content; }
+        .user-header { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+        .avatar { width: 50px; height: 50px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+        .menu-list { display: flex; flex-direction: column; gap: 10px; }
+        .menu-list a { text-decoration: none; color: #555; font-size: 14px; padding: 12px; border-radius: 8px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .menu-list a.active { background: #eef6ff; color: var(--primary); font-weight: 600; }
+        .menu-list a:hover { background: #f0f0f0; }
+
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 25px; border-left: 4px solid var(--primary); padding-left: 15px; }
+        
+        /* CSS cho bảng bình luận */
+        .comment-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .comment-table th { background: #f8f9fa; color: #495057; padding: 16px; border-bottom: 2px solid #dee2e6; text-align: left; }
+        .comment-table td { padding: 18px 16px; border-bottom: 1px solid #eee; vertical-align: top; }
+        .comment-table tr:hover { background-color: #f8fbff; }
+        .post-link a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .no-data { padding: 60px 0 !important; text-align: center; color: #6c757d; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <aside class="sidebar">
+        <div class="user-header">
+            <div class="avatar" th:text="${user.username != null ? #strings.substring(user.username,0,1).toUpperCase() : 'U'}">U</div>
+            <div>
+                <strong th:text="${user.username}">Username</strong><br>
+                <small style="color: #888;">Thành viên NewsApp</small>
+            </div>
+        </div>
+        <nav class="menu-list">
+            <a href="/profile"><i class="fa-solid fa-user-gear"></i> Thông tin chung</a>
+            <a href="/profile/comments" class="active"><i class="fa-solid fa-comment-dots"></i> Ý kiến của bạn</a>
+            <a href="/saved-news"><i class="fa-solid fa-bookmark"></i> Tin đã lưu</a>
+            <a href="/history"><i class="fa-regular fa-clock"></i> Tin đã xem</a>
+            <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</a>
+        </nav>
+    </aside>
+
+    <main>
+        <a href="/" style="display:inline-block; margin-bottom: 20px; color: var(--primary); text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Quay lại Trang chủ</a>
+        
+        <div class="card">
+            <h2 class="section-title">Ý kiến của bạn</h2>
+            <table class="comment-table">
+                <thead>
+                    <tr>
+                        <th>Nội dung bình luận</th>
+                        <th style="width: 30%;">Bài viết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="comment : ${comments}">
+                        <td th:text="${comment.content}">Nội dung...</td>
+                        <td>
+                            <a th:href="@{'/tin-tuc/' + ${comment.post.id}}" th:text="${comment.post.title}">Tiêu đề bài viết</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(comments)}">
+                        <td colspan="2" class="no-data">
+                            <i class="fa-regular fa-comment-dots" style="font-size: 40px; display: block; margin-bottom: 10px; color: #dee2e6;"></i>
+                            Bạn chưa chia sẻ ý kiến nào.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

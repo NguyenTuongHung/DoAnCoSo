@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hồ sơ cá nhân - NewsApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #007bff; --bg: #f4f7f6; --text: #333; --border: #ddd; --success: #d4edda; --success-text: #155724; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .wrapper { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; gap: 30px; }
+        
+        /* Thông báo thành công */
+        .alert-success { background: var(--success); color: var(--success-text); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+
+        /* Sidebar & Layout */
+        .sidebar { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: fit-content; }
+        .user-header { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+        .avatar { width: 50px; height: 50px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+        .menu-list { display: flex; flex-direction: column; gap: 10px; }
+        .menu-list a { text-decoration: none; color: #555; font-size: 14px; padding: 12px; border-radius: 8px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .menu-list a.active { background: #eef6ff; color: var(--primary); font-weight: 600; }
+        
+        /* Main Content */
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 25px; border-left: 4px solid var(--primary); padding-left: 15px; }
+        .field { display: flex; align-items: center; padding: 12px 0; }
+        .field-label { width: 140px; font-size: 14px; color: #666; }
+        .field-value input, .field-value select { width: 100%; max-width: 350px; padding: 10px 15px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+        
+        .btn-save { padding: 12px 40px; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-save:hover { background: #0056b3; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; color: var(--primary); text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <aside class="sidebar">
+        <div class="user-header">
+            <div class="avatar" th:text="${user.username != null ? #strings.substring(user.username,0,1).toUpperCase() : 'U'}">U</div>
+            <div>
+                <strong th:text="${user.username}">Username</strong><br>
+                <small style="color: #888;">Thành viên NewsApp</small>
+            </div>
+        </div>
+        <nav class="menu-list">
+            <a href="/profile" class="active"><i class="fa-solid fa-user-gear"></i> Thông tin chung</a>
+            <a href="/profile/comments"><i class="fa-solid fa-comment-dots"></i> Ý kiến của bạn</a>
+            <a href="/saved-news"><i class="fa-solid fa-bookmark"></i> Tin đã lưu</a>
+            <a href="/history"><i class="fa-regular fa-clock"></i> Tin đã xem</a>
+            <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</a>
+        </nav>
+    </aside>
+
+    <main>
+        <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Quay lại Trang chủ</a>
+        
+        <div th:if="${param.success}" class="alert-success" id="successAlert">
+            <i class="fa-solid fa-check-circle"></i> Thông tin đã được cập nhật thành công!
+        </div>
+        
+        <form th:action="@{/admin/profile/update}" th:object="${user}" method="POST">
+            <div class="card">
+                <h2 class="section-title">Thông tin tài khoản</h2>
+                <div class="field">
+                    <span class="field-label">Email</span>
+                    <span class="field-value"><input type="email" th:field="*{email}" placeholder="example@gmail.com" required></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">Thông tin cá nhân</h2>
+                <div class="field">
+                    <span class="field-label">Ngày sinh</span>
+                    <span class="field-value"><input type="date" th:field="*{birthDate}"></span>
+                </div>
+                <div class="field">
+                    <span class="field-label">Giới tính</span>
+                    <span class="field-value">
+                        <select th:field="*{gender}">
+                            <option value="">-- Chọn giới tính --</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">Công việc và học vấn</h2>
+                <div class="field">
+                    <span class="field-label">Bằng cấp</span>
+                    <span class="field-value">
+                        <select th:field="*{education}">
+                            <option value="">-- Chọn bằng cấp --</option>
+                            <option value="Trung học phổ thông">Trung học phổ thông</option>
+                            <option value="Cao đẳng">Cao đẳng</option>
+                            <option value="Đại học">Đại học</option>
+                            <option value="Thạc sĩ">Thạc sĩ</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="field">
+                    <span class="field-label">Địa chỉ</span>
+                    <span class="field-value"><input type="text" th:field="*{location}" placeholder="Số nhà, đường, quận/huyện..."></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-save">Lưu thay đổi</button>
+        </form>
+    </main>
+</div>
+
+<script>
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(function() {
+        var alert = document.getElementById('successAlert');
+        if (alert) alert.style.display = 'none';
+    }, 3000);
+</script>
+</body>
+</html>
